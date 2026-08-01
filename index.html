@@ -20,12 +20,11 @@ nav .links a:hover{color:#ff80b8}
 section{padding:50px 30px;max-width:1100px;margin:0 auto}
 section h2{font-size:1.8em;color:#ff60b0;margin-bottom:24px;text-align:center}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}
-.card{background:rgba(20,8,32,.7);border:1px solid rgba(255,100,180,.12);border-radius:10px;padding:24px;text-align:center;transition:transform .2s}
-.card:hover{transform:translateY(-3px)}
+.card{background:rgba(20,8,32,.7);border:1px solid rgba(255,100,180,.12);border-radius:10px;padding:24px;text-align:center}
 .card h3{color:#ff80b8;font-size:1.15em;margin-bottom:8px}
 .card .pr{font-size:1.4em;font-weight:700;color:#ff50a0;margin:10px 0}
 .card p{color:#a088c0;font-size:.9em;margin-bottom:14px}
-.card .buy{display:inline-block;padding:10px 28px;background:rgba(255,60,130,.18);color:#ff70b0;border:1px solid rgba(255,80,150,.35);border-radius:6px;text-decoration:none;font-size:.95em;font-weight:600;transition:all .2s}
+.card .buy{display:inline-block;padding:10px 28px;background:rgba(255,60,130,.18);color:#ff70b0;border:1px solid rgba(255,80,150,.35);border-radius:6px;text-decoration:none;font-size:.95em;font-weight:600}
 .card .buy:hover{background:rgba(255,60,130,.3)}
 .footer{text-align:center;padding:30px;color:#604080;font-size:.85em;border-top:1px solid rgba(255,100,180,.08)}
 .hid{display:none}
@@ -37,7 +36,6 @@ body.am .adm{display:block}
 .ap label{display:block;color:#c0a0e0;margin:12px 0 4px;font-size:.9em}
 .ap input[type=text],.ap input[type=url],.ap input[type=password],.ap textarea{width:100%;padding:10px;background:#10061c;border:1px solid rgba(255,100,180,.2);color:#e0d0f0;border-radius:5px;font-size:.9em;outline:0}
 .ap textarea{min-height:80px;resize:vertical}
-.ap input:focus,.ap textarea:focus{border-color:rgba(255,100,180,.5)}
 .ap .btn{padding:10px 24px;background:linear-gradient(135deg,#c02060,#8020a0);color:#fff;border:none;border-radius:5px;cursor:pointer;font-weight:600;font-size:.9em;margin:8px 4px 0 0}
 .ap .btn.dg{background:#401020}
 .ap hr{border:none;border-top:1px solid rgba(255,100,180,.1);margin:20px 0}
@@ -50,19 +48,16 @@ body.am .adm{display:block}
 <canvas id="s"></canvas>
 <div class="z">
 <div class="main" id="main">
-<nav><span class="logo" id="nav-logo">LUCKY ZEN</span><span class="links"><a href="#home" onclick="Q('home')">Home</a><a href="#store" onclick="Q('store')">Store</a><a href="#about" onclick="Q('about')">About</a><a href="#contact" onclick="Q('contact')">Contact</a></span></nav>
-<section class="hero" id="home"><h1 id="ht">Lucky Zen Software</h1><p id="hp"></p><a class="cta" href="#store" id="hc">View Products</a></section>
+<nav><span class="logo" id="nl">LUCKY ZEN</span><span class="links"><a href="#home" onclick="Q('home')">Home</a><a href="#store" onclick="Q('store')">Store</a><a href="#about" onclick="Q('about')">About</a><a href="#contact" onclick="Q('contact')">Contact</a></span></nav>
+<section class="hero" id="home"><h1 id="ht">Lucky Zen Software</h1><p id="hp">Next-gen controller scripting engine with auto green, dribble combos, and competitive mods for every game.</p><a class="cta" href="#store" id="hc">View Products</a></section>
 <section id="store"><h2>Products &amp; Subscriptions</h2><div class="grid" id="sg"></div></section>
-<section id="about"><h2>About</h2><p style="text-align:center;max-width:700px;margin:0 auto;color:#b89ad0;line-height:1.8" id="at"></p></section>
-<section id="contact"><h2>Contact</h2><p style="text-align:center;color:#b89ad0" id="ct"></p></section>
+<section id="about"><h2>About</h2><p style="text-align:center;max-width:700px;margin:0 auto;color:#b89ad0;line-height:1.8" id="at">Lucky Zen Software provides premium controller scripting tools for competitive gamers. Built with love, designed for dominance.</p></section>
+<section id="contact"><h2>Contact</h2><p style="text-align:center;color:#b89ad0" id="ct">DM us on Discord or email support@luckyzensoftware.com</p></section>
 <div class="footer">Lucky Zen Software &copy; 2026</div>
 </div>
 <div class="adm" id="adm">
 <nav><span class="logo">ADMIN</span><span class="links"><a href="#" onclick="XA()">Exit</a></span></nav>
-<div class="al" id="al"><h2 style="color:#ff60b0;margin-bottom:16px">Admin</h2>
-<input type="password" id="apw" placeholder="Password"><br>
-<input type="password" id="atk" placeholder="GitHub Token (repo scope)" style="margin-top:8px"><br>
-<button class="btn" onclick="AL()">Enter</button></div>
+<div class="al" id="al"><h2 style="color:#ff60b0;margin-bottom:16px">Admin</h2><input type="password" id="apw" placeholder="Password"><br><input type="password" id="atk" placeholder="GitHub Token" style="margin-top:8px"><br><button class="btn" onclick="AL()">Enter</button></div>
 <div class="ap hid" id="ap">
 <h2>Settings</h2>
 <label>Title</label><input type="text" id="f0">
@@ -80,20 +75,16 @@ body.am .adm{display:block}
 <p id="msg" style="color:#ff80b0;margin-top:10px"></p>
 </div></div></div>
 <script>
-var DEF={title:'Lucky Zen Software',ht:'Lucky Zen Software',hp:'Next-gen controller scripting engine with auto green, dribble combos, and competitive mods for every game.',hc:'View Products',at:'Lucky Zen Software provides premium controller scripting tools for competitive gamers.',ct:'DM us on Discord',cid:'BAAeYT9g_f0qBpNVSHaP_UzFeSx2meiA8vOt3HGfc7jHwdycK1D0gYTt0pJwoU60VAQnhPi9xdIvaXb7KA',ppl:'',pr:[{n:'Weekly Key',d:'7 days full access to all gamepacks and mods.',p:'$9.99',pp:'EEK2HJL4EE5KG'},{n:'Monthly Key',d:'30 days unlimited scripting, updates included.',p:'$24.99',pp:''},{n:'Lifetime Key',d:'One-time payment. Lifetime access to everything.',p:'$79.99',pp:''}]};
-var CFG=DEF;
-var GHO="shehver36-dotcom";
-var GHR="lucky-zen";
-var GHT="";
-
-function CF(){return CFG}
+var CFG={title:'Lucky Zen Software',ht:'Lucky Zen Software',hp:'Next-gen controller scripting engine with auto green, dribble combos, and competitive mods for every game.',hc:'View Products',at:'Lucky Zen Software provides premium controller scripting tools for competitive gamers. Built with love, designed for dominance.',ct:'DM us on Discord or email support@luckyzensoftware.com',cid:'BAAeYT9g_f0qBpNVSHaP_UzFeSx2meiA8vOt3HGfc7jHwdycK1D0gYTt0pJwoU60VAQnhPi9xdIvaXb7KA',ppl:'',pr:[{n:'Weekly Key',d:'7 days full access to all gamepacks and mods.',p:'$9.99',pp:'EEK2HJL4EE5KG'},{n:'Monthly Key',d:'30 days unlimited scripting, updates included.',p:'$24.99',pp:''},{n:'Lifetime Key',d:'One-time payment. Lifetime access to everything.',p:'$79.99',pp:''}]};
+var GHO='shehver36-dotcom',GHR='lucky-zen',GHT='';
 
 function LD(){
   var c=CFG;
   E('ht').textContent=c.ht;E('hp').textContent=c.hp;E('hc').textContent=c.hc;
-  E('nav-logo').textContent=c.title.substring(0,18).toUpperCase();document.title=c.title;
+  E('nl').textContent=c.title.substring(0,18).toUpperCase();document.title=c.title;
   E('at').textContent=c.at;E('ct').textContent=c.ct;
   var g=E('sg');g.innerHTML='';
+  if(!c.pr)return;
   c.pr.forEach(function(p,i){
     var cd=document.createElement('div');cd.className='card';
     var by='';
@@ -103,73 +94,66 @@ function LD(){
     g.appendChild(cd);
   });
 }
-
 function E(id){return document.getElementById(id)}
 function Q(id){E(id).scrollIntoView({behavior:'smooth'})}
 
-// Fetch live config from GitHub on page load
-(function(){
-  var x=new XMLHttpRequest();
-  x.open('GET','https://api.github.com/repos/'+GHO+'/'+GHR+'/contents/config.json');
-  x.setRequestHeader('Accept','application/vnd.github.v3.raw');
-  x.onload=function(){
-    if(x.status===200){
-      try{CFG=JSON.parse(x.responseText)}catch(e){}
-      if(!CFG.pr||CFG.pr.length===0)CFG.pr=DEF.pr;
-    }
-    LD();
-  };
-  x.onerror=function(){LD()};
-  x.send();
-})();
-
-// Admin
-function SV(){if(!GHT){E('msg').textContent='Enter GitHub token first';return}var c=JSON.parse(JSON.stringify(CFG));c.title=V('f0');c.ht=V('f1');c.hp=V('f2');c.hc=V('f3');c.at=V('f4');c.ct=V('f5');c.cid=V('f6');c.ppl=V('f7');var is=document.querySelectorAll('#pl [data-f]');for(var j=0;j<is.length;j++){var e=is[j],i=+e.getAttribute('data-pid'),f=e.getAttribute('data-f');if(c.pr[i])c.pr[i][f]=e.value}var json=JSON.stringify(c,null,2);var b64=btoa(unescape(encodeURIComponent(json)));E('msg').textContent='Saving...';doPut(b64,function(success){if(success){CFG=c;LD();E('msg').textContent='Published! Live in ~30s.'}else{E('msg').textContent='Error saving. Check token permissions.'}});}
-  var c=JSON.parse(JSON.stringify(CFG));
+// ── Admin Save ─────────────────────────────────
+function SV(){
+  if(!GHT){E('msg').textContent='Enter GitHub token first';return}
+  var c={};Object.keys(CFG).forEach(function(k){c[k]=CFG[k]});
   c.title=V('f0');c.ht=V('f1');c.hp=V('f2');c.hc=V('f3');c.at=V('f4');c.ct=V('f5');c.cid=V('f6');c.ppl=V('f7');
   var is=document.querySelectorAll('#pl [data-f]');
   for(var j=0;j<is.length;j++){var e=is[j],i=+e.getAttribute('data-pid'),f=e.getAttribute('data-f');if(c.pr[i])c.pr[i][f]=e.value}
+  CFG=c;LD();
   
-  var json=JSON.stringify(c,null,2);
-  var b64=btoa(unescape(encodeURIComponent(json)));
+  // Build new HTML with updated config baked in
+  var newHtml=document.documentElement.outerHTML;
+  var start=newHtml.indexOf('var CFG=');
+  var end=newHtml.indexOf(';var GHO');
+  if(start>=0&&end>start){
+    var prefix=newHtml.substring(0,start+'var CFG='.length);
+    var suffix=newHtml.substring(end+1);
+    newHtml=prefix+JSON.stringify(c)+suffix;
+  }
+  var b64=btoa(unescape(encodeURIComponent('<!DOCTYPE html>\n'+newHtml)));
   
   E('msg').textContent='Publishing...';
-  
-  // Get existing config.json SHA
+  putFile(b64,function(ok){E('msg').textContent=ok?'Published! Live in ~30s.':'Error — check token.'});
+}
+
+function putFile(b64,cb){
   var gx=new XMLHttpRequest();
-  gx.open('GET','https://api.github.com/repos/'+GHO+'/'+GHR+'/contents/config.json');
+  gx.open('GET','https://api.github.com/repos/'+GHO+'/'+GHR+'/contents/index.html?ref=main&_='+Date.now());
   gx.setRequestHeader('Authorization','Bearer '+GHT);
   gx.setRequestHeader('Accept','application/vnd.github.v3+json');
+  gx.setRequestHeader('Cache-Control','no-cache');
   gx.onload=function(){
     var sha='';
     try{sha=JSON.parse(gx.responseText).sha}catch(e){}
-    
-    var body=JSON.stringify({message:'Update site config',content:b64,branch:'main',sha:sha});
+    var body=JSON.stringify({message:'Update site from admin',content:b64,branch:'main',sha:sha});
     var px=new XMLHttpRequest();
-    px.open('PUT','https://api.github.com/repos/'+GHO+'/'+GHR+'/contents/config.json');
+    px.open('PUT','https://api.github.com/repos/'+GHO+'/'+GHR+'/contents/index.html');
     px.setRequestHeader('Authorization','Bearer '+GHT);
     px.setRequestHeader('Accept','application/vnd.github.v3+json');
     px.setRequestHeader('Content-Type','application/json');
     px.onload=function(){
       if(px.status===200||px.status===201){
-        // Trigger Pages build
         var bx=new XMLHttpRequest();
         bx.open('POST','https://api.github.com/repos/'+GHO+'/'+GHR+'/pages/builds');
         bx.setRequestHeader('Authorization','Bearer '+GHT);
         bx.setRequestHeader('Accept','application/vnd.github.v3+json');
         bx.send();
-        CFG=c;LD();
-        E('msg').textContent='Published! Site updates in ~30s.';
-      }else{
-        E('msg').textContent='Error: '+px.status+' — check token';
-      }
+        cb(true);
+      }else if(px.status===422){putFile(b64,cb)}
+      else{cb(false)}
     };
+    px.onerror=function(){cb(false)};
     px.send(body);
   };
+  gx.onerror=function(){cb(false)};
   gx.send();
 }
 
-function doPut(b64,cb){var gx=new XMLHttpRequest();gx.open('GET','https://api.github.com/repos/'+GHO+'/'+GHR+'/contents/config.json?ref=main&t='+Date.now());gx.setRequestHeader('Authorization','Bearer '+GHT);gx.setRequestHeader('Accept','application/vnd.github.v3+json');gx.setRequestHeader('Cache-Control','no-cache');gx.onload=function(){var sha='';try{sha=JSON.parse(gx.responseText).sha}catch(e){}var body=JSON.stringify({message:'Update site config',content:b64,branch:'main',sha:sha});var px=new XMLHttpRequest();px.open('PUT','https://api.github.com/repos/'+GHO+'/'+GHR+'/contents/config.json');px.setRequestHeader('Authorization','Bearer '+GHT);px.setRequestHeader('Accept','application/vnd.github.v3+json');px.setRequestHeader('Content-Type','application/json');px.onload=function(){if(px.status===200||px.status===201){var bx=new XMLHttpRequest();bx.open('POST','https://api.github.com/repos/'+GHO+'/'+GHR+'/pages/builds');bx.setRequestHeader('Authorization','Bearer '+GHT);bx.setRequestHeader('Accept','application/vnd.github.v3+json');bx.send();cb(true);}else if(px.status===422){doPut(b64,cb);}else{cb(false);}};px.send(body);};gx.onerror=function(){cb(false)};gx.send();}
 function V(id){var e=E(id);return e?e.value||'':''}
 function AP(){CFG.pr.push({n:'New',d:'',p:'$0.00',pp:''});RP()}
 function RM(i){CFG.pr.splice(i,1);RP()}
@@ -187,27 +171,17 @@ function RP(){
     l.appendChild(d);
   });
 }
-function RS(){CFG=JSON.parse(JSON.stringify(DEF));PA();LD();E('msg').textContent='Reset to defaults. Save to publish.'}
-function PA(){
-  E('f0').value=CFG.title;E('f1').value=CFG.ht;E('f2').value=CFG.hp;E('f3').value=CFG.hc;
-  E('f4').value=CFG.at;E('f5').value=CFG.ct;E('f6').value=CFG.cid;E('f7').value=CFG.ppl;
-  RP();
-}
-function AL(){
-  var pw=E('apw').value,tk=E('atk').value.trim();
-  if(pw!=='lucky2026'){alert('Wrong password');return}
-  if(!tk){alert('Enter your GitHub token (repo scope)');return}
-  GHT=tk;
-  E('al').classList.add('hid');E('ap').classList.remove('hid');PA();
-}
+function RS(){var def={title:'Lucky Zen Software',ht:'Lucky Zen Software',hp:'Next-gen controller scripting engine with auto green, dribble combos, and competitive mods for every game.',hc:'View Products',at:'Lucky Zen Software provides premium controller scripting tools for competitive gamers. Built with love, designed for dominance.',ct:'DM us on Discord or email support@luckyzensoftware.com',cid:'BAAeYT9g_f0qBpNVSHaP_UzFeSx2meiA8vOt3HGfc7jHwdycK1D0gYTt0pJwoU60VAQnhPi9xdIvaXb7KA',ppl:'',pr:[{n:'Weekly Key',d:'7 days full access to all gamepacks and mods.',p:'$9.99',pp:'EEK2HJL4EE5KG'},{n:'Monthly Key',d:'30 days unlimited scripting, updates included.',p:'$24.99',pp:''},{n:'Lifetime Key',d:'One-time payment. Lifetime access to everything.',p:'$79.99',pp:''}]};CFG=JSON.parse(JSON.stringify(def));PA();LD();E('msg').textContent='Reset to defaults. Save to publish.'}
+function PA(){E('f0').value=CFG.title;E('f1').value=CFG.ht;E('f2').value=CFG.hp;E('f3').value=CFG.hc;E('f4').value=CFG.at;E('f5').value=CFG.ct;E('f6').value=CFG.cid;E('f7').value=CFG.ppl;RP()}
+function AL(){if(E('apw').value!=='lucky2026'){alert('Wrong password');return}var tk=E('atk').value.trim();if(!tk){alert('Enter GitHub token');return}GHT=tk;E('al').classList.add('hid');E('ap').classList.remove('hid');PA()}
 function XA(){document.body.classList.remove('am');history.pushState(null,'','/')}
 if(location.hash==='#admin')document.body.classList.add('am');
 window.addEventListener('hashchange',function(){document.body.classList.toggle('am',location.hash==='#admin')});
-
 var cv=document.getElementById('s'),cx=cv.getContext('2d'),st=[],W,H;
 function IS(){W=cv.width=innerWidth;H=cv.height=innerHeight;st=[];for(var i=0;i<160;i++)st.push({x:Math.random()*W,y:Math.random()*H,r:.3+Math.random()*2.2,s:.2+Math.random()*1.5,a:.25+Math.random()*.6,p:Math.random()>.7})}
 function DS(){cx.clearRect(0,0,W,H);var t=Date.now()*.001;st.forEach(function(s){var tw=.5+.5*Math.sin(t*s.s+s.p*10),a=s.a*tw*220;if(a<10)return;cx.beginPath();cx.fillStyle=s.p?'rgba(255,150,210,'+a/255+')':'rgba(220,215,245,'+a/255+')';cx.arc(s.x,s.y,s.r,0,Math.PI*2);cx.fill()});requestAnimationFrame(DS)}
 IS();DS();addEventListener('resize',IS);
+LD();
 </script>
 </body>
 </html>
