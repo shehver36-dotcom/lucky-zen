@@ -98,7 +98,7 @@ var D={
     {n:'Lifetime Key',d:'One-time payment. Lifetime access to everything.',p:'$79.99',pp:''}
   ]
 };
-function C(){try{var s=localStorage.lz_config;if(s){var c=JSON.parse(s);Object.keys(D).forEach(function(k){if(!(k in c))c[k]=D[k]});c.products=c.products||D.products;c.products.forEach(function(p,i){var dp=D.products[i]||{};Object.keys(dp).forEach(function(k){if(!(k in p))p[k]=dp[k]})});return c}}catch(e){}return JSON.parse(JSON.stringify(D))}
+function C(){try{var s=localStorage.lz_config;if(s)return JSON.parse(s)}catch(e){}return JSON.parse(JSON.stringify(D))}
 function S(c){localStorage.lz_config=JSON.stringify(c)}
 
 function load(){
