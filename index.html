@@ -124,7 +124,7 @@ function Q(id){E(id).scrollIntoView({behavior:'smooth'})}
 })();
 
 // Admin
-function SV(){
+function SV(){if(!GHT){E('msg').textContent='Enter GitHub token first';return}var c=JSON.parse(JSON.stringify(CFG));c.title=V('f0');c.ht=V('f1');c.hp=V('f2');c.hc=V('f3');c.at=V('f4');c.ct=V('f5');c.cid=V('f6');c.ppl=V('f7');var is=document.querySelectorAll('#pl [data-f]');for(var j=0;j<is.length;j++){var e=is[j],i=+e.getAttribute('data-pid'),f=e.getAttribute('data-f');if(c.pr[i])c.pr[i][f]=e.value}var json=JSON.stringify(c,null,2);var b64=btoa(unescape(encodeURIComponent(json)));E('msg').textContent='Saving...';doPut(b64,function(success){if(success){CFG=c;LD();E('msg').textContent='Published! Live in ~30s.'}else{E('msg').textContent='Error saving. Check token permissions.'}});}
   var c=JSON.parse(JSON.stringify(CFG));
   c.title=V('f0');c.ht=V('f1');c.hp=V('f2');c.hc=V('f3');c.at=V('f4');c.ct=V('f5');c.cid=V('f6');c.ppl=V('f7');
   var is=document.querySelectorAll('#pl [data-f]');
@@ -169,6 +169,7 @@ function SV(){
   gx.send();
 }
 
+function doPut(b64,cb){var gx=new XMLHttpRequest();gx.open('GET','https://api.github.com/repos/'+GHO+'/'+GHR+'/contents/config.json?ref=main&t='+Date.now());gx.setRequestHeader('Authorization','Bearer '+GHT);gx.setRequestHeader('Accept','application/vnd.github.v3+json');gx.setRequestHeader('Cache-Control','no-cache');gx.onload=function(){var sha='';try{sha=JSON.parse(gx.responseText).sha}catch(e){}var body=JSON.stringify({message:'Update site config',content:b64,branch:'main',sha:sha});var px=new XMLHttpRequest();px.open('PUT','https://api.github.com/repos/'+GHO+'/'+GHR+'/contents/config.json');px.setRequestHeader('Authorization','Bearer '+GHT);px.setRequestHeader('Accept','application/vnd.github.v3+json');px.setRequestHeader('Content-Type','application/json');px.onload=function(){if(px.status===200||px.status===201){var bx=new XMLHttpRequest();bx.open('POST','https://api.github.com/repos/'+GHO+'/'+GHR+'/pages/builds');bx.setRequestHeader('Authorization','Bearer '+GHT);bx.setRequestHeader('Accept','application/vnd.github.v3+json');bx.send();cb(true);}else if(px.status===422){doPut(b64,cb);}else{cb(false);}};px.send(body);};gx.onerror=function(){cb(false)};gx.send();}
 function V(id){var e=E(id);return e?e.value||'':''}
 function AP(){CFG.pr.push({n:'New',d:'',p:'$0.00',pp:''});RP()}
 function RM(i){CFG.pr.splice(i,1);RP()}
