@@ -42,7 +42,17 @@ body.am .adm{display:block}
 .al{text-align:center;padding:80px 20px}
 .al input{padding:10px 16px;background:#10061c;border:1px solid rgba(255,100,180,.3);color:#e0d0f0;border-radius:5px;font-size:1em;width:260px;text-align:center}
 .al .btn{margin-top:10px}
-</style>
+.reg-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.8);z-index:200;justify-content:center;align-items:center}
+.reg-overlay.show{display:flex}
+.reg-box{background:rgba(16,6,28,.95);border:1px solid rgba(255,100,180,.3);border-radius:12px;padding:30px;width:380px;max-width:90vw;text-align:center}
+.reg-box h3{color:#ff60b0;margin-bottom:16px;font-size:1.2em}
+.reg-box input{width:100%;padding:10px;background:#10061c;border:1px solid rgba(255,100,180,.2);color:#e0d0f0;border-radius:5px;font-size:.9em;margin-bottom:10px;outline:0}
+.reg-box input:focus{border-color:rgba(255,100,180,.5)}
+.reg-box .btn{padding:10px 28px;background:linear-gradient(135deg,#c02060,#8020a0);color:#fff;border:none;border-radius:5px;cursor:pointer;font-weight:600;font-size:.95em;margin-top:8px}
+.key-display{display:none;text-align:center;padding:60px 20px;max-width:600px;margin:0 auto}
+.key-display.show{display:block}
+.key-display .key-box{background:rgba(20,8,40,.8);border:2px solid #ff50a0;border-radius:10px;padding:24px;margin:20px auto;font-family:'Consolas',monospace;font-size:1.2em;color:#ff80b8;word-break:break-all;letter-spacing:2px}
+.key-display .key-label{color:#ff60b0;font-size:.85em;margin-bottom:6px}</style>
 </head>
 <body>
 <canvas id="s"></canvas>
@@ -105,6 +115,119 @@ function SV(){
   var is=document.querySelectorAll('#pl [data-f]');
   for(var j=0;j<is.length;j++){var e=is[j],i=+e.getAttribute('data-pid'),f=e.getAttribute('data-f');if(c.pr[i])c.pr[i][f]=e.value}
   CFG=c;LD();
+var HMAC_KEY=[0x8C,0x3F,0x1A,0x7D,0x4E,0x9B,0x2C,0x6F,0x5A,0x1E,0x7B,0x3D,0x8F,0x4C,0x9A,0x2E,0x6D,0x1B,0x7F,0x4A,0x3C,0x8E,0x5D,0x1F];
+var PENDING_KEY=null;var PENDING_USER=null;var PENDING_TYPE=null;
+
+function buyNow(type,price,name){
+  var ppId='';var p=CFG.pr.find(function(x){return x.n.indexOf(name)>=0||x.n.indexOf(type)>=0});
+  if(p)ppId=p.pp;
+  PENDING_TYPE=type;PENDING_USER=null;
+  document.getElementById('reg-title').textContent='Get '+name;
+  document.getElementById('reg-plan').textContent=name+' - '+price;
+  document.getElementById('reg-overlay').classList.add('show');
+}
+function closeReg(){document.getElementById('reg-overlay').classList.remove('show')}
+
+function startPurchase(){
+  var user=document.getElementById('reg-user').value.trim();
+  if(user.length<3){alert('Username must be at least 3 characters');return}
+  PENDING_USER=user;
+  var ppId='';var p=CFG.pr.find(function(x){return x.n.indexOf(PENDING_TYPE)>=0||PENDING_TYPE==='Weekly'&&x.n.indexOf('Week')>=0||PENDING_TYPE==='Monthly'&&x.n.indexOf('Month')>=0||PENDING_TYPE==='Lifetime'&&x.n.indexOf('Life')>=0});
+  if(p)ppId=p.pp;
+  if(ppId){
+    var returnUrl=encodeURIComponent('https://shehver36-dotcom.github.io/luckyservices/#'+PENDING_TYPE+':'+PENDING_USER);
+    window.location.href='https://www.paypal.com/ncp/payment/'+ppId+'?return='+returnUrl;
+  }else{
+    alert('Payment link not configured. Contact admin.');
+  }
+}
+
+function checkKeyGen(){
+  var hash=location.hash.substring(1);
+  if(!hash||hash.indexOf(':')<0)return;
+  var parts=hash.split(':');var type=parts[0];var user=parts[1];
+  if(!user||user.length<3)return;
+  location.hash='';
+  generateAndSaveKey(type,user);
+}
+
+function generateAndSaveKey(type,user){
+  var typeCode='';var duration=0;var expireDays=0;
+  if(type==='Weekly'||type==='W'){typeCode='W';duration=7;expireDays=7}
+  else if(type==='Monthly'||type==='M'){typeCode='M';duration=30;expireDays=30}
+  else if(type==='Lifetime'||type==='L'){typeCode='L';duration=0;expireDays=99999}
+  else{typeCode='T';duration=60;expireDays=0}
+
+  var random='';for(var i=0;i<4;i++)random+=('0'+Math.floor(Math.random()*256).toString(16)).slice(-2);
+  var payload=typeCode+'-'+duration+'-'+random;
+  var sig=hmacSha256(payload,HMAC_KEY).substring(0,8).toUpperCase();
+  var key='SZEN-'+payload+'-'+sig;
+
+  PENDING_KEY=key;
+  document.getElementById('main').style.display='none';
+  document.getElementById('key-display').classList.add('show');
+  document.getElementById('key-user').textContent='Username: '+user;
+  document.getElementById('key-plan').textContent='Plan: '+type+' | Expires: '+(expireDays===99999?'Never':expireDays+' days');
+  document.getElementById('key-value').textContent=key;
+
+  // Save to users.json on GitHub
+  saveUserToGithub(user,key,type,expireDays);
+}
+
+function saveUserToGithub(user,key,type,expireDays){
+  var gx=new XMLHttpRequest();
+  gx.open('GET','https://api.github.com/repos/'+GHO+'/'+GHR+'/contents/users.json?ref=main&_='+Date.now());
+  gx.setRequestHeader('Authorization','Bearer '+GHT);
+  gx.setRequestHeader('Accept','application/vnd.github.v3+json');
+  gx.onload=function(){
+    var users=[];var sha='';
+    try{var r=JSON.parse(gx.responseText);sha=r.sha;users=JSON.parse(atob(r.content.replace(/\s/g,'')))||[]}catch(e){}
+    users.push({user:user,key:key,type:type,expires:expireDays===99999?'Never':new Date(Date.now()+expireDays*86400000).toISOString(),created:new Date().toISOString()});
+    var json=JSON.stringify(users,null,2);
+    var b64=btoa(unescape(encodeURIComponent(json)));
+    var body=JSON.stringify({message:'New key for '+user,content:b64,branch:'main',sha:sha});
+    var px=new XMLHttpRequest();
+    px.open('PUT','https://api.github.com/repos/'+GHO+'/'+GHR+'/contents/users.json');
+    px.setRequestHeader('Authorization','Bearer '+GHT);
+    px.setRequestHeader('Accept','application/vnd.github.v3+json');
+    px.setRequestHeader('Content-Type','application/json');
+    px.send(body);
+  };
+  gx.send();
+}
+
+function hmacSha256(msg,key){
+  if(!msg||!key)return'';
+  var k=stringToBytes(key);if(k.length>32)k=sha256Raw(k);while(k.length<32)k.push(0);
+  var ipad=new Uint8Array(64);var opad=new Uint8Array(64);
+  for(var i=0;i<64;i++){ipad[i]=0x36;opad[i]=0x5c}
+  for(var i=0;i<k.length;i++){ipad[i]^=k[i];opad[i]^=k[i]}
+  var m=stringToBytes(msg);var inner=new Uint8Array(ipad.length+m.length);
+  inner.set(ipad);inner.set(m,ipad.length);
+  var ih=sha256Raw(inner);
+  var outer=new Uint8Array(opad.length+ih.length);
+  outer.set(opad);outer.set(ih,opad.length);
+  return bytesToHex(sha256Raw(outer));
+}
+function stringToBytes(s){var b=[];for(var i=0;i<s.length;i++){var c=s.charCodeAt(i);if(c<128)b.push(c);else if(c<2048){b.push(192|c>>6);b.push(128|c&63)}else{b.push(224|c>>12);b.push(128|(c>>6)&63);b.push(128|c&63)}}return new Uint8Array(b)}
+function sha256Raw(data){
+  var h=[0x6a09e667,0xbb67ae85,0x3c6ef372,0xa54ff53a,0x510e527f,0x9b05688c,0x1f83d9ab,0x5be0cd19];
+  var k=[0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0c37,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2];
+  var len=data.length*8;var pad=new Uint8Array(((len+65)>>>9)+1<<6);pad.set(data);pad[data.length]=0x80;
+  var view=new DataView(pad.buffer);view.setUint32(pad.length-4,len>>>24);view.setUint32(pad.length-8,len&0xffffffff,false);
+  for(var i=0;i<pad.length;i+=64){
+    var w=new Uint32Array(64);for(var j=0;j<16;j++)w[j]=view.getUint32(i+j*4,false);
+    for(var j=16;j<64;j++){var s0=((w[j-15]>>>7)|(w[j-15]<<25))^((w[j-15]>>>18)|(w[j-15]<<14))^(w[j-15]>>>3);var s1=((w[j-2]>>>17)|(w[j-2]<<15))^((w[j-2]>>>19)|(w[j-2]<<13))^(w[j-2]>>>10);w[j]=w[j-16]+s0+w[j-7]+s1|0}
+    var a=h[0],b=h[1],c=h[2],d=h[3],e=h[4],f=h[5],g=h[6],hh=h[7];
+    for(var j=0;j<64;j++){var S1=((e>>>6)|(e<<26))^((e>>>11)|(e<<21))^((e>>>25)|(e<<7));var ch=(e&f)^(~e&g);var t1=hh+S1+ch+k[j]+w[j]|0;var S0=((a>>>2)|(a<<30))^((a>>>13)|(a<<19))^((a>>>22)|(a<<10));var maj=(a&b)^(a&c)^(b&c);var t2=S0+maj|0;hh=g;g=f;f=e;e=d+t1|0;d=c;c=b;b=a;a=t1+t2|0}
+    h[0]=h[0]+a|0;h[1]=h[1]+b|0;h[2]=h[2]+c|0;h[3]=h[3]+d|0;h[4]=h[4]+e|0;h[5]=h[5]+f|0;h[6]=h[6]+g|0;h[7]=h[7]+hh|0;
+  }
+  var out=new Uint8Array(32);var ov=new DataView(out.buffer);for(var i=0;i<8;i++)ov.setUint32(i*4,h[i],false);return out;
+}
+function bytesToHex(b){return Array.from(b).map(function(x){return('0'+x.toString(16)).slice(-2)}).join('')}
+
+// Check on load if returning from PayPal
+checkKeyGen();
   
   // Build new HTML with updated config baked in
   var newHtml=document.documentElement.outerHTML;
@@ -171,7 +294,120 @@ function RP(){
     l.appendChild(d);
   });
 }
-function RS(){var def={title:'Lucky Zen Software',ht:'Lucky Zen Software',hp:'Next-gen controller scripting engine with auto green, dribble combos, and competitive mods for every game.',hc:'View Products',at:'Lucky Zen Software provides premium controller scripting tools for competitive gamers. Built with love, designed for dominance.',ct:'DM us on Discord or email support@luckyzensoftware.com',cid:'BAAeYT9g_f0qBpNVSHaP_UzFeSx2meiA8vOt3HGfc7jHwdycK1D0gYTt0pJwoU60VAQnhPi9xdIvaXb7KA',ppl:'',pr:[{n:'Weekly Key',d:'7 days full access to all gamepacks and mods.',p:'$5',pp:'EEK2HJL4EE5KG'},{n:'Monthly Key',d:'30 days unlimited scripting, updates included.',p:'$15',pp:'9CK3MLQXZZSLE'},{n:'Lifetime Key',d:'One-time payment. Lifetime access to everything.',p:'$65',pp:'JSGZ45WWEDBN6'}]};CFG=JSON.parse(JSON.stringify(def));PA();LD();E('msg').textContent='Reset to defaults. Save to publish.'}
+function RS(){var def={title:'Lucky Zen Software',ht:'Lucky Zen Software',hp:'Next-gen controller scripting engine with auto green, dribble combos, and competitive mods for every game.',hc:'View Products',at:'Lucky Zen Software provides premium controller scripting tools for competitive gamers. Built with love, designed for dominance.',ct:'DM us on Discord or email support@luckyzensoftware.com',cid:'BAAeYT9g_f0qBpNVSHaP_UzFeSx2meiA8vOt3HGfc7jHwdycK1D0gYTt0pJwoU60VAQnhPi9xdIvaXb7KA',ppl:'',pr:[{n:'Weekly Key',d:'7 days full access to all gamepacks and mods.',p:'$5',pp:'EEK2HJL4EE5KG'},{n:'Monthly Key',d:'30 days unlimited scripting, updates included.',p:'$15',pp:'9CK3MLQXZZSLE'},{n:'Lifetime Key',d:'One-time payment. Lifetime access to everything.',p:'$65',pp:'JSGZ45WWEDBN6'}]};CFG=JSON.parse(JSON.stringify(def));PA();LD();
+var HMAC_KEY=[0x8C,0x3F,0x1A,0x7D,0x4E,0x9B,0x2C,0x6F,0x5A,0x1E,0x7B,0x3D,0x8F,0x4C,0x9A,0x2E,0x6D,0x1B,0x7F,0x4A,0x3C,0x8E,0x5D,0x1F];
+var PENDING_KEY=null;var PENDING_USER=null;var PENDING_TYPE=null;
+
+function buyNow(type,price,name){
+  var ppId='';var p=CFG.pr.find(function(x){return x.n.indexOf(name)>=0||x.n.indexOf(type)>=0});
+  if(p)ppId=p.pp;
+  PENDING_TYPE=type;PENDING_USER=null;
+  document.getElementById('reg-title').textContent='Get '+name;
+  document.getElementById('reg-plan').textContent=name+' - '+price;
+  document.getElementById('reg-overlay').classList.add('show');
+}
+function closeReg(){document.getElementById('reg-overlay').classList.remove('show')}
+
+function startPurchase(){
+  var user=document.getElementById('reg-user').value.trim();
+  if(user.length<3){alert('Username must be at least 3 characters');return}
+  PENDING_USER=user;
+  var ppId='';var p=CFG.pr.find(function(x){return x.n.indexOf(PENDING_TYPE)>=0||PENDING_TYPE==='Weekly'&&x.n.indexOf('Week')>=0||PENDING_TYPE==='Monthly'&&x.n.indexOf('Month')>=0||PENDING_TYPE==='Lifetime'&&x.n.indexOf('Life')>=0});
+  if(p)ppId=p.pp;
+  if(ppId){
+    var returnUrl=encodeURIComponent('https://shehver36-dotcom.github.io/luckyservices/#'+PENDING_TYPE+':'+PENDING_USER);
+    window.location.href='https://www.paypal.com/ncp/payment/'+ppId+'?return='+returnUrl;
+  }else{
+    alert('Payment link not configured. Contact admin.');
+  }
+}
+
+function checkKeyGen(){
+  var hash=location.hash.substring(1);
+  if(!hash||hash.indexOf(':')<0)return;
+  var parts=hash.split(':');var type=parts[0];var user=parts[1];
+  if(!user||user.length<3)return;
+  location.hash='';
+  generateAndSaveKey(type,user);
+}
+
+function generateAndSaveKey(type,user){
+  var typeCode='';var duration=0;var expireDays=0;
+  if(type==='Weekly'||type==='W'){typeCode='W';duration=7;expireDays=7}
+  else if(type==='Monthly'||type==='M'){typeCode='M';duration=30;expireDays=30}
+  else if(type==='Lifetime'||type==='L'){typeCode='L';duration=0;expireDays=99999}
+  else{typeCode='T';duration=60;expireDays=0}
+
+  var random='';for(var i=0;i<4;i++)random+=('0'+Math.floor(Math.random()*256).toString(16)).slice(-2);
+  var payload=typeCode+'-'+duration+'-'+random;
+  var sig=hmacSha256(payload,HMAC_KEY).substring(0,8).toUpperCase();
+  var key='SZEN-'+payload+'-'+sig;
+
+  PENDING_KEY=key;
+  document.getElementById('main').style.display='none';
+  document.getElementById('key-display').classList.add('show');
+  document.getElementById('key-user').textContent='Username: '+user;
+  document.getElementById('key-plan').textContent='Plan: '+type+' | Expires: '+(expireDays===99999?'Never':expireDays+' days');
+  document.getElementById('key-value').textContent=key;
+
+  // Save to users.json on GitHub
+  saveUserToGithub(user,key,type,expireDays);
+}
+
+function saveUserToGithub(user,key,type,expireDays){
+  var gx=new XMLHttpRequest();
+  gx.open('GET','https://api.github.com/repos/'+GHO+'/'+GHR+'/contents/users.json?ref=main&_='+Date.now());
+  gx.setRequestHeader('Authorization','Bearer '+GHT);
+  gx.setRequestHeader('Accept','application/vnd.github.v3+json');
+  gx.onload=function(){
+    var users=[];var sha='';
+    try{var r=JSON.parse(gx.responseText);sha=r.sha;users=JSON.parse(atob(r.content.replace(/\s/g,'')))||[]}catch(e){}
+    users.push({user:user,key:key,type:type,expires:expireDays===99999?'Never':new Date(Date.now()+expireDays*86400000).toISOString(),created:new Date().toISOString()});
+    var json=JSON.stringify(users,null,2);
+    var b64=btoa(unescape(encodeURIComponent(json)));
+    var body=JSON.stringify({message:'New key for '+user,content:b64,branch:'main',sha:sha});
+    var px=new XMLHttpRequest();
+    px.open('PUT','https://api.github.com/repos/'+GHO+'/'+GHR+'/contents/users.json');
+    px.setRequestHeader('Authorization','Bearer '+GHT);
+    px.setRequestHeader('Accept','application/vnd.github.v3+json');
+    px.setRequestHeader('Content-Type','application/json');
+    px.send(body);
+  };
+  gx.send();
+}
+
+function hmacSha256(msg,key){
+  if(!msg||!key)return'';
+  var k=stringToBytes(key);if(k.length>32)k=sha256Raw(k);while(k.length<32)k.push(0);
+  var ipad=new Uint8Array(64);var opad=new Uint8Array(64);
+  for(var i=0;i<64;i++){ipad[i]=0x36;opad[i]=0x5c}
+  for(var i=0;i<k.length;i++){ipad[i]^=k[i];opad[i]^=k[i]}
+  var m=stringToBytes(msg);var inner=new Uint8Array(ipad.length+m.length);
+  inner.set(ipad);inner.set(m,ipad.length);
+  var ih=sha256Raw(inner);
+  var outer=new Uint8Array(opad.length+ih.length);
+  outer.set(opad);outer.set(ih,opad.length);
+  return bytesToHex(sha256Raw(outer));
+}
+function stringToBytes(s){var b=[];for(var i=0;i<s.length;i++){var c=s.charCodeAt(i);if(c<128)b.push(c);else if(c<2048){b.push(192|c>>6);b.push(128|c&63)}else{b.push(224|c>>12);b.push(128|(c>>6)&63);b.push(128|c&63)}}return new Uint8Array(b)}
+function sha256Raw(data){
+  var h=[0x6a09e667,0xbb67ae85,0x3c6ef372,0xa54ff53a,0x510e527f,0x9b05688c,0x1f83d9ab,0x5be0cd19];
+  var k=[0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0c37,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2];
+  var len=data.length*8;var pad=new Uint8Array(((len+65)>>>9)+1<<6);pad.set(data);pad[data.length]=0x80;
+  var view=new DataView(pad.buffer);view.setUint32(pad.length-4,len>>>24);view.setUint32(pad.length-8,len&0xffffffff,false);
+  for(var i=0;i<pad.length;i+=64){
+    var w=new Uint32Array(64);for(var j=0;j<16;j++)w[j]=view.getUint32(i+j*4,false);
+    for(var j=16;j<64;j++){var s0=((w[j-15]>>>7)|(w[j-15]<<25))^((w[j-15]>>>18)|(w[j-15]<<14))^(w[j-15]>>>3);var s1=((w[j-2]>>>17)|(w[j-2]<<15))^((w[j-2]>>>19)|(w[j-2]<<13))^(w[j-2]>>>10);w[j]=w[j-16]+s0+w[j-7]+s1|0}
+    var a=h[0],b=h[1],c=h[2],d=h[3],e=h[4],f=h[5],g=h[6],hh=h[7];
+    for(var j=0;j<64;j++){var S1=((e>>>6)|(e<<26))^((e>>>11)|(e<<21))^((e>>>25)|(e<<7));var ch=(e&f)^(~e&g);var t1=hh+S1+ch+k[j]+w[j]|0;var S0=((a>>>2)|(a<<30))^((a>>>13)|(a<<19))^((a>>>22)|(a<<10));var maj=(a&b)^(a&c)^(b&c);var t2=S0+maj|0;hh=g;g=f;f=e;e=d+t1|0;d=c;c=b;b=a;a=t1+t2|0}
+    h[0]=h[0]+a|0;h[1]=h[1]+b|0;h[2]=h[2]+c|0;h[3]=h[3]+d|0;h[4]=h[4]+e|0;h[5]=h[5]+f|0;h[6]=h[6]+g|0;h[7]=h[7]+hh|0;
+  }
+  var out=new Uint8Array(32);var ov=new DataView(out.buffer);for(var i=0;i<8;i++)ov.setUint32(i*4,h[i],false);return out;
+}
+function bytesToHex(b){return Array.from(b).map(function(x){return('0'+x.toString(16)).slice(-2)}).join('')}
+
+// Check on load if returning from PayPal
+checkKeyGen();E('msg').textContent='Reset to defaults. Save to publish.'}
 function PA(){E('f0').value=CFG.title;E('f1').value=CFG.ht;E('f2').value=CFG.hp;E('f3').value=CFG.hc;E('f4').value=CFG.at;E('f5').value=CFG.ct;E('f6').value=CFG.cid;E('f7').value=CFG.ppl;RP()}
 function AL(){if(E('apw').value!=='lucky2026'){alert('Wrong password');return}var tk=E('atk').value.trim();if(!tk){alert('Enter GitHub token');return}GHT=tk;E('al').classList.add('hid');E('ap').classList.remove('hid');PA()}
 function XA(){document.body.classList.remove('am');history.pushState(null,'','/')}
@@ -182,6 +418,120 @@ function IS(){W=cv.width=innerWidth;H=cv.height=innerHeight;st=[];for(var i=0;i<
 function DS(){cx.clearRect(0,0,W,H);var t=Date.now()*.001;st.forEach(function(s){var tw=.5+.5*Math.sin(t*s.s+s.p*10),a=s.a*tw*220;if(a<10)return;cx.beginPath();cx.fillStyle=s.p?'rgba(255,150,210,'+a/255+')':'rgba(220,215,245,'+a/255+')';cx.arc(s.x,s.y,s.r,0,Math.PI*2);cx.fill()});requestAnimationFrame(DS)}
 IS();DS();addEventListener('resize',IS);
 LD();
+var HMAC_KEY=[0x8C,0x3F,0x1A,0x7D,0x4E,0x9B,0x2C,0x6F,0x5A,0x1E,0x7B,0x3D,0x8F,0x4C,0x9A,0x2E,0x6D,0x1B,0x7F,0x4A,0x3C,0x8E,0x5D,0x1F];
+var PENDING_KEY=null;var PENDING_USER=null;var PENDING_TYPE=null;
+
+function buyNow(type,price,name){
+  var ppId='';var p=CFG.pr.find(function(x){return x.n.indexOf(name)>=0||x.n.indexOf(type)>=0});
+  if(p)ppId=p.pp;
+  PENDING_TYPE=type;PENDING_USER=null;
+  document.getElementById('reg-title').textContent='Get '+name;
+  document.getElementById('reg-plan').textContent=name+' - '+price;
+  document.getElementById('reg-overlay').classList.add('show');
+}
+function closeReg(){document.getElementById('reg-overlay').classList.remove('show')}
+
+function startPurchase(){
+  var user=document.getElementById('reg-user').value.trim();
+  if(user.length<3){alert('Username must be at least 3 characters');return}
+  PENDING_USER=user;
+  var ppId='';var p=CFG.pr.find(function(x){return x.n.indexOf(PENDING_TYPE)>=0||PENDING_TYPE==='Weekly'&&x.n.indexOf('Week')>=0||PENDING_TYPE==='Monthly'&&x.n.indexOf('Month')>=0||PENDING_TYPE==='Lifetime'&&x.n.indexOf('Life')>=0});
+  if(p)ppId=p.pp;
+  if(ppId){
+    var returnUrl=encodeURIComponent('https://shehver36-dotcom.github.io/luckyservices/#'+PENDING_TYPE+':'+PENDING_USER);
+    window.location.href='https://www.paypal.com/ncp/payment/'+ppId+'?return='+returnUrl;
+  }else{
+    alert('Payment link not configured. Contact admin.');
+  }
+}
+
+function checkKeyGen(){
+  var hash=location.hash.substring(1);
+  if(!hash||hash.indexOf(':')<0)return;
+  var parts=hash.split(':');var type=parts[0];var user=parts[1];
+  if(!user||user.length<3)return;
+  location.hash='';
+  generateAndSaveKey(type,user);
+}
+
+function generateAndSaveKey(type,user){
+  var typeCode='';var duration=0;var expireDays=0;
+  if(type==='Weekly'||type==='W'){typeCode='W';duration=7;expireDays=7}
+  else if(type==='Monthly'||type==='M'){typeCode='M';duration=30;expireDays=30}
+  else if(type==='Lifetime'||type==='L'){typeCode='L';duration=0;expireDays=99999}
+  else{typeCode='T';duration=60;expireDays=0}
+
+  var random='';for(var i=0;i<4;i++)random+=('0'+Math.floor(Math.random()*256).toString(16)).slice(-2);
+  var payload=typeCode+'-'+duration+'-'+random;
+  var sig=hmacSha256(payload,HMAC_KEY).substring(0,8).toUpperCase();
+  var key='SZEN-'+payload+'-'+sig;
+
+  PENDING_KEY=key;
+  document.getElementById('main').style.display='none';
+  document.getElementById('key-display').classList.add('show');
+  document.getElementById('key-user').textContent='Username: '+user;
+  document.getElementById('key-plan').textContent='Plan: '+type+' | Expires: '+(expireDays===99999?'Never':expireDays+' days');
+  document.getElementById('key-value').textContent=key;
+
+  // Save to users.json on GitHub
+  saveUserToGithub(user,key,type,expireDays);
+}
+
+function saveUserToGithub(user,key,type,expireDays){
+  var gx=new XMLHttpRequest();
+  gx.open('GET','https://api.github.com/repos/'+GHO+'/'+GHR+'/contents/users.json?ref=main&_='+Date.now());
+  gx.setRequestHeader('Authorization','Bearer '+GHT);
+  gx.setRequestHeader('Accept','application/vnd.github.v3+json');
+  gx.onload=function(){
+    var users=[];var sha='';
+    try{var r=JSON.parse(gx.responseText);sha=r.sha;users=JSON.parse(atob(r.content.replace(/\s/g,'')))||[]}catch(e){}
+    users.push({user:user,key:key,type:type,expires:expireDays===99999?'Never':new Date(Date.now()+expireDays*86400000).toISOString(),created:new Date().toISOString()});
+    var json=JSON.stringify(users,null,2);
+    var b64=btoa(unescape(encodeURIComponent(json)));
+    var body=JSON.stringify({message:'New key for '+user,content:b64,branch:'main',sha:sha});
+    var px=new XMLHttpRequest();
+    px.open('PUT','https://api.github.com/repos/'+GHO+'/'+GHR+'/contents/users.json');
+    px.setRequestHeader('Authorization','Bearer '+GHT);
+    px.setRequestHeader('Accept','application/vnd.github.v3+json');
+    px.setRequestHeader('Content-Type','application/json');
+    px.send(body);
+  };
+  gx.send();
+}
+
+function hmacSha256(msg,key){
+  if(!msg||!key)return'';
+  var k=stringToBytes(key);if(k.length>32)k=sha256Raw(k);while(k.length<32)k.push(0);
+  var ipad=new Uint8Array(64);var opad=new Uint8Array(64);
+  for(var i=0;i<64;i++){ipad[i]=0x36;opad[i]=0x5c}
+  for(var i=0;i<k.length;i++){ipad[i]^=k[i];opad[i]^=k[i]}
+  var m=stringToBytes(msg);var inner=new Uint8Array(ipad.length+m.length);
+  inner.set(ipad);inner.set(m,ipad.length);
+  var ih=sha256Raw(inner);
+  var outer=new Uint8Array(opad.length+ih.length);
+  outer.set(opad);outer.set(ih,opad.length);
+  return bytesToHex(sha256Raw(outer));
+}
+function stringToBytes(s){var b=[];for(var i=0;i<s.length;i++){var c=s.charCodeAt(i);if(c<128)b.push(c);else if(c<2048){b.push(192|c>>6);b.push(128|c&63)}else{b.push(224|c>>12);b.push(128|(c>>6)&63);b.push(128|c&63)}}return new Uint8Array(b)}
+function sha256Raw(data){
+  var h=[0x6a09e667,0xbb67ae85,0x3c6ef372,0xa54ff53a,0x510e527f,0x9b05688c,0x1f83d9ab,0x5be0cd19];
+  var k=[0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0c37,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2];
+  var len=data.length*8;var pad=new Uint8Array(((len+65)>>>9)+1<<6);pad.set(data);pad[data.length]=0x80;
+  var view=new DataView(pad.buffer);view.setUint32(pad.length-4,len>>>24);view.setUint32(pad.length-8,len&0xffffffff,false);
+  for(var i=0;i<pad.length;i+=64){
+    var w=new Uint32Array(64);for(var j=0;j<16;j++)w[j]=view.getUint32(i+j*4,false);
+    for(var j=16;j<64;j++){var s0=((w[j-15]>>>7)|(w[j-15]<<25))^((w[j-15]>>>18)|(w[j-15]<<14))^(w[j-15]>>>3);var s1=((w[j-2]>>>17)|(w[j-2]<<15))^((w[j-2]>>>19)|(w[j-2]<<13))^(w[j-2]>>>10);w[j]=w[j-16]+s0+w[j-7]+s1|0}
+    var a=h[0],b=h[1],c=h[2],d=h[3],e=h[4],f=h[5],g=h[6],hh=h[7];
+    for(var j=0;j<64;j++){var S1=((e>>>6)|(e<<26))^((e>>>11)|(e<<21))^((e>>>25)|(e<<7));var ch=(e&f)^(~e&g);var t1=hh+S1+ch+k[j]+w[j]|0;var S0=((a>>>2)|(a<<30))^((a>>>13)|(a<<19))^((a>>>22)|(a<<10));var maj=(a&b)^(a&c)^(b&c);var t2=S0+maj|0;hh=g;g=f;f=e;e=d+t1|0;d=c;c=b;b=a;a=t1+t2|0}
+    h[0]=h[0]+a|0;h[1]=h[1]+b|0;h[2]=h[2]+c|0;h[3]=h[3]+d|0;h[4]=h[4]+e|0;h[5]=h[5]+f|0;h[6]=h[6]+g|0;h[7]=h[7]+hh|0;
+  }
+  var out=new Uint8Array(32);var ov=new DataView(out.buffer);for(var i=0;i<8;i++)ov.setUint32(i*4,h[i],false);return out;
+}
+function bytesToHex(b){return Array.from(b).map(function(x){return('0'+x.toString(16)).slice(-2)}).join('')}
+
+// Check on load if returning from PayPal
+checkKeyGen();
 </script>
-</body>
+<div class="reg-overlay" id="reg-overlay"><div class="reg-box"><h3 id="reg-title">Get Your Key</h3><p style="color:#a088c0;margin-bottom:14px;font-size:.9em" id="reg-plan"></p><input type="text" id="reg-user" placeholder="Choose a username"><button class="btn" onclick="startPurchase()">Continue to PayPal</button><br><a href="#" onclick="closeReg()" style="color:#604080;font-size:.8em;margin-top:8px;display:inline-block">Cancel</a></div></div>
+<div class="key-display" id="key-display"><h2 style="color:#ff60b0">Your Key is Ready</h2><p style="color:#b89ad0;margin:10px 0" id="key-user"></p><p style="color:#a088c0;font-size:.85em" id="key-plan"></p><div class="key-box" id="key-value"></div><p style="color:#a088c0;margin-top:10px;font-size:.85em">Copy this key and paste it into the Lucky Services app to activate your subscription.</p><button class="btn" onclick="document.getElementById('key-display').classList.remove('show');document.getElementById('main').style.display=''" style="margin-top:16px;padding:10px 24px;background:linear-gradient(135deg,#c02060,#8020a0);color:#fff;border:none;border-radius:5px;cursor:pointer;font-weight:600">Done</button></div></body>
 </html>
