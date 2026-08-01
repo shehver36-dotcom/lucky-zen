@@ -7,188 +7,136 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:radial-gradient(ellipse at 30% 20%,#1a0a20,#06020a,#020105);color:#f0e1fa;font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh;overflow-x:hidden}
-canvas#stars{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
-.content{z-index:1;position:relative}
-nav{background:rgba(8,2,16,.92);backdrop-filter:blur(12px);padding:14px 30px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,100,180,.15);position:sticky;top:0;z-index:100}
+canvas#s{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.z{z-index:1;position:relative}
+nav{background:rgba(8,2,16,.92);padding:14px 30px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,100,180,.15);position:sticky;top:0;z-index:100}
 nav .logo{font-size:1.4em;font-weight:700;color:#ff50a0;letter-spacing:2px}
-nav .links{display:flex;gap:24px}
-nav .links a{color:#a88ac0;text-decoration:none;font-size:.95em;transition:color .2s}
+nav .links a{color:#a88ac0;text-decoration:none;font-size:.95em;margin-left:24px;transition:color .2s}
 nav .links a:hover{color:#ff80b8}
 .hero{text-align:center;padding:80px 20px 60px;max-width:800px;margin:0 auto}
-.hero h1{font-size:2.8em;font-weight:800;color:#ff60b0;margin-bottom:12px;letter-spacing:3px}
+.hero h1{font-size:2.8em;font-weight:800;color:#ff60b0;margin-bottom:12px}
 .hero p{font-size:1.15em;color:#b89ad0;line-height:1.7;max-width:600px;margin:0 auto 30px}
 .hero .cta{display:inline-block;padding:12px 36px;background:linear-gradient(135deg,#c02060,#8020a0);color:#fff;text-decoration:none;border-radius:6px;font-weight:600;font-size:1.05em}
-.hero-img{max-width:400px;margin:20px auto;border-radius:12px;border:1px solid rgba(255,100,180,.2);display:none}
 section{padding:50px 30px;max-width:1100px;margin:0 auto}
 section h2{font-size:1.8em;color:#ff60b0;margin-bottom:24px;text-align:center}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}
 .card{background:rgba(20,8,32,.7);border:1px solid rgba(255,100,180,.12);border-radius:10px;padding:24px;text-align:center;transition:transform .2s}
 .card:hover{transform:translateY(-3px)}
 .card h3{color:#ff80b8;font-size:1.15em;margin-bottom:8px}
-.card .price{font-size:1.4em;font-weight:700;color:#ff50a0;margin:10px 0}
+.card .pr{font-size:1.4em;font-weight:700;color:#ff50a0;margin:10px 0}
 .card p{color:#a088c0;font-size:.9em;margin-bottom:14px}
-.card .buy-btn{display:inline-block;padding:10px 28px;background:rgba(255,60,130,.18);color:#ff70b0;border:1px solid rgba(255,80,150,.35);border-radius:6px;text-decoration:none;font-size:.95em;font-weight:600;cursor:pointer;transition:all .2s}
-.card .buy-btn:hover{background:rgba(255,60,130,.3)}
+.card .buy{display:inline-block;padding:10px 28px;background:rgba(255,60,130,.18);color:#ff70b0;border:1px solid rgba(255,80,150,.35);border-radius:6px;text-decoration:none;font-size:.95em;font-weight:600;transition:all .2s}
+.card .buy:hover{background:rgba(255,60,130,.3)}
 .footer{text-align:center;padding:30px;color:#604080;font-size:.85em;border-top:1px solid rgba(255,100,180,.08)}
-.admin{display:none}
-body.admin-mode .main{display:none}
-body.admin-mode .admin{display:block}
-.admin-panel{max-width:700px;margin:40px auto;background:rgba(16,6,28,.85);border:1px solid rgba(255,100,180,.2);border-radius:12px;padding:30px}
-.admin-panel h2{color:#ff60b0;margin-bottom:20px}
-.admin-panel label{display:block;color:#c0a0e0;margin:12px 0 4px;font-size:.9em}
-.admin-panel input[type=text],.admin-panel input[type=url],.admin-panel textarea{width:100%;padding:10px;background:#10061c;border:1px solid rgba(255,100,180,.2);color:#e0d0f0;border-radius:5px;font-size:.9em;outline:0}
-.admin-panel textarea{min-height:80px;resize:vertical}
-.admin-panel input:focus,.admin-panel textarea:focus{border-color:rgba(255,100,180,.5)}
-.admin-panel .btn{padding:10px 24px;background:linear-gradient(135deg,#c02060,#8020a0);color:#fff;border:none;border-radius:5px;cursor:pointer;font-weight:600;font-size:.9em;margin:8px 4px 0 0}
-.admin-panel .btn.danger{background:#401020}
-.admin-panel hr{border:none;border-top:1px solid rgba(255,100,180,.1);margin:20px 0}
-.admin-login{text-align:center;padding:80px 20px}
-.admin-login input{padding:10px 16px;background:#10061c;border:1px solid rgba(255,100,180,.3);color:#e0d0f0;border-radius:5px;font-size:1em;width:260px;text-align:center}
-.admin-login .btn{margin-top:10px}
-.hidden{display:none}
+.hid{display:none}
+.adm{display:none}
+body.am .main{display:none}
+body.am .adm{display:block}
+.ap{max-width:700px;margin:40px auto;background:rgba(16,6,28,.85);border:1px solid rgba(255,100,180,.2);border-radius:12px;padding:30px}
+.ap h2{color:#ff60b0;margin-bottom:20px}
+.ap label{display:block;color:#c0a0e0;margin:12px 0 4px;font-size:.9em}
+.ap input[type=text],.ap input[type=url],.ap textarea{width:100%;padding:10px;background:#10061c;border:1px solid rgba(255,100,180,.2);color:#e0d0f0;border-radius:5px;font-size:.9em;outline:0}
+.ap textarea{min-height:80px;resize:vertical}
+.ap input:focus,.ap textarea:focus{border-color:rgba(255,100,180,.5)}
+.ap .btn{padding:10px 24px;background:linear-gradient(135deg,#c02060,#8020a0);color:#fff;border:none;border-radius:5px;cursor:pointer;font-weight:600;font-size:.9em;margin:8px 4px 0 0}
+.ap .btn.dg{background:#401020}
+.ap hr{border:none;border-top:1px solid rgba(255,100,180,.1);margin:20px 0}
+.al{text-align:center;padding:80px 20px}
+.al input{padding:10px 16px;background:#10061c;border:1px solid rgba(255,100,180,.3);color:#e0d0f0;border-radius:5px;font-size:1em;width:260px;text-align:center}
+.al .btn{margin-top:10px}
 </style>
 </head>
 <body>
-<script>localStorage.removeItem('lz_config');</script>
-<canvas id="stars"></canvas>
-<div class="content">
+<canvas id="s"></canvas>
+<div class="z">
 <div class="main" id="main">
-<nav><div class="logo" id="nav-logo">LUCKY ZEN</div><div class="links">
-<a href="#home" onclick="scrollTo('home')">Home</a>
-<a href="#store" onclick="scrollTo('store')">Store</a>
-<a href="#about" onclick="scrollTo('about')">About</a>
-<a href="#contact" onclick="scrollTo('contact')">Contact</a>
-</div></nav>
-<section class="hero" id="home"><h1 id="hero-title">Lucky Zen Software</h1><p id="hero-text"></p><img class="hero-img" id="hero-img" src="" onerror="this.style.display='none'"><a class="cta" href="#store" id="hero-cta">View Products</a></section>
-<section id="store"><h2>Products &amp; Subscriptions</h2><div class="grid" id="store-grid"></div></section>
-<section id="about"><h2>About</h2><p style="text-align:center;max-width:700px;margin:0 auto;color:#b89ad0;line-height:1.8" id="about-text"></p></section>
-<section id="contact"><h2>Contact</h2><p style="text-align:center;color:#b89ad0" id="contact-text"></p></section>
+<nav><span class="logo" id="nav-logo">LUCKY ZEN</span><span class="links"><a href="#home" onclick="Q('home')">Home</a><a href="#store" onclick="Q('store')">Store</a><a href="#about" onclick="Q('about')">About</a><a href="#contact" onclick="Q('contact')">Contact</a></span></nav>
+<section class="hero" id="home"><h1 id="ht">Lucky Zen Software</h1><p id="hp"></p><a class="cta" href="#store" id="hc">View Products</a></section>
+<section id="store"><h2>Products &amp; Subscriptions</h2><div class="grid" id="sg"></div></section>
+<section id="about"><h2>About</h2><p style="text-align:center;max-width:700px;margin:0 auto;color:#b89ad0;line-height:1.8" id="at"></p></section>
+<section id="contact"><h2>Contact</h2><p style="text-align:center;color:#b89ad0" id="ct"></p></section>
 <div class="footer">Lucky Zen Software &copy; 2026</div>
 </div>
-<div class="admin" id="admin">
-<nav><div class="logo">LUCKY ZEN — Admin</div><div class="links"><a href="#" onclick="exitAdmin()">Exit Admin</a></div></nav>
-<div class="admin-login" id="admin-login"><h2 style="color:#ff60b0;margin-bottom:16px">Admin Access</h2><input type="password" id="admin-pass" placeholder="Password"><br><button class="btn" onclick="adminLogin()">Enter</button></div>
-<div class="admin-panel hidden" id="admin-panel">
-<h2>Site Customization</h2>
-<label>Site Title</label><input type="text" id="cfg-title">
-<label>Hero Headline</label><input type="text" id="cfg-hero-title">
-<label>Hero Description</label><textarea id="cfg-hero-text"></textarea>
-<label>Hero CTA Text</label><input type="text" id="cfg-hero-cta">
-<label>Hero Image URL</label><input type="url" id="cfg-hero-img">
-<label>About Text</label><textarea id="cfg-about"></textarea>
-<label>Contact Info</label><textarea id="cfg-contact"></textarea>
-<hr><h3>Payment Methods</h3>
-<label>PayPal Client ID</label><input type="text" id="cfg-paypal-clientid">
-<label>PayPal.me Link</label><input type="url" id="cfg-paypal">
-<hr><h3>Products</h3><div id="prod-list"></div>
-<button class="btn" onclick="addProduct()">+ Add Product</button>
-<hr><button class="btn" onclick="saveConfig()">Save All Changes</button>
-<button class="btn danger" onclick="resetConfig()">Reset to Defaults</button>
-<p id="admin-msg" style="color:#ff80b0;margin-top:10px"></p>
+<div class="adm" id="adm">
+<nav><span class="logo">ADMIN</span><span class="links"><a href="#" onclick="XA()">Exit</a></span></nav>
+<div class="al" id="al"><h2 style="color:#ff60b0;margin-bottom:16px">Admin</h2><input type="password" id="apw" placeholder="Password"><br><button class="btn" onclick="AL()">Enter</button></div>
+<div class="ap hid" id="ap">
+<h2>Settings</h2>
+<label>Title</label><input type="text" id="f0">
+<label>Hero Headline</label><input type="text" id="f1">
+<label>Hero Text</label><textarea id="f2"></textarea>
+<label>CTA Text</label><input type="text" id="f3">
+<label>About</label><textarea id="f4"></textarea>
+<label>Contact</label><textarea id="f5"></textarea>
+<label>PayPal Client ID</label><input type="text" id="f6">
+<label>PayPal.me</label><input type="url" id="f7">
+<hr><h3>Products</h3><div id="pl"></div>
+<button class="btn" onclick="AP()">+ Product</button>
+<hr><button class="btn" onclick="SV()">Save All</button>
+<button class="btn dg" onclick="RS()">Reset</button>
+<p id="msg" style="color:#ff80b0;margin-top:10px"></p>
 </div></div></div>
 <script>
-var D={
-  title:'Lucky Zen Software',heroTitle:'Lucky Zen Software',
-  heroText:'Next-gen controller scripting engine with auto green, dribble combos, and competitive mods for every game.',
-  heroCta:'View Products',heroImg:'',about:'Lucky Zen Software provides premium controller scripting tools for competitive gamers.',
-  contact:'DM us on Discord or email support@luckyzensoftware.com',
-  paypalClientId:'BAAeYT9g_f0qBpNVSHaP_UzFeSx2meiA8vOt3HGfc7jHwdycK1D0gYTt0pJwoU60VAQnhPi9xdIvaXb7KA',
-  paypal:'',products:[
-    {n:'Weekly Key',d:'7 days full access to all gamepacks and mods.',p:'$9.99',pp:'EEK2HJL4EE5KG'},
-    {n:'Monthly Key',d:'30 days unlimited scripting, updates included.',p:'$24.99',pp:''},
-    {n:'Lifetime Key',d:'One-time payment. Lifetime access to everything.',p:'$79.99',pp:''}
-  ]
-};
-function C(){try{var s=localStorage.lz_config;if(s)return JSON.parse(s)}catch(e){}return JSON.parse(JSON.stringify(D))}
-function S(c){localStorage.lz_config=JSON.stringify(c)}
-
-function load(){if(localStorage.lz_config){try{var t=JSON.parse(localStorage.lz_config);if(t.products&&t.products.length>0&&(!t.products[0].n||t.products[0].n==='undefined')){localStorage.removeItem('lz_config');location.reload();return}}catch(e){localStorage.removeItem('lz_config');location.reload();return}}
-  var c=C();
-  ge('hero-title').textContent=c.heroTitle;ge('hero-text').textContent=c.heroText;
-  ge('hero-cta').textContent=c.heroCta;ge('nav-logo').textContent=c.title.substring(0,18).toUpperCase();
-  document.title=c.title;ge('about-text').textContent=c.about;ge('contact-text').textContent=c.contact;
-  var img=ge('hero-img');if(c.heroImg){img.src=c.heroImg;img.style.display=''}else img.style.display='none';
-  var g=ge('store-grid');g.innerHTML='';
-  c.products.forEach(function(p,i){
-    var card=document.createElement('div');card.className='card';
-    var buy='';
-    if(p.pp){
-      buy='<a class="buy-btn" href="https://www.paypal.com/ncp/payment/'+p.pp+'" target="_blank">Buy Now — PayPal</a>';
-    }else if(c.paypal){
-      buy='<a class="buy-btn" href="'+c.paypal+'/'+p.p.replace('$','')+'" target="_blank">Buy Now</a>';
-    }
-    card.innerHTML='<h3>'+p.n+'</h3><div class="price">'+p.p+'</div><p>'+p.d+'</p>'+buy;
-    g.appendChild(card);
+var D={title:'Lucky Zen Software',ht:'Lucky Zen Software',hp:'Next-gen controller scripting engine with auto green, dribble combos, and competitive mods for every game.',hc:'View Products',at:'Lucky Zen Software provides premium controller scripting tools for competitive gamers.',ct:'DM us on Discord',cid:'BAAeYT9g_f0qBpNVSHaP_UzFeSx2meiA8vOt3HGfc7jHwdycK1D0gYTt0pJwoU60VAQnhPi9xdIvaXb7KA',ppl:'',pr:[{n:'Weekly Key',d:'7 days full access to all gamepacks and mods.',p:'$9.99',pp:'EEK2HJL4EE5KG'},{n:'Monthly Key',d:'30 days unlimited scripting, updates included.',p:'$24.99',pp:''},{n:'Lifetime Key',d:'One-time payment. Lifetime access to everything.',p:'$79.99',pp:''}]};
+function CF(){try{var s=localStorage.lz;if(s)return JSON.parse(s)}catch(e){}return JSON.parse(JSON.stringify(D))}
+function SV(){
+  var c=CF();
+  c.title=V('f0');c.ht=V('f1');c.hp=V('f2');c.hc=V('f3');c.at=V('f4');c.ct=V('f5');c.cid=V('f6');c.ppl=V('f7');
+  var is=document.querySelectorAll('#pl [data-f]');
+  for(var j=0;j<is.length;j++){var e=is[j],i=+e.getAttribute('data-pid'),f=e.getAttribute('data-f');if(c.pr[i])c.pr[i][f]=e.value}
+  localStorage.lz=JSON.stringify(c);LD();
+  E('msg').textContent='Saved!';setTimeout(function(){E('msg').textContent=''},1500);
+}
+function V(id){var e=E(id);return e?e.value||'':''}
+function E(id){return document.getElementById(id)}
+function Q(id){E(id).scrollIntoView({behavior:'smooth'})}
+function LD(){
+  var c=CF();
+  E('ht').textContent=c.ht;E('hp').textContent=c.hp;E('hc').textContent=c.hc;
+  E('nav-logo').textContent=c.title.substring(0,18).toUpperCase();document.title=c.title;
+  E('at').textContent=c.at;E('ct').textContent=c.ct;
+  var g=E('sg');g.innerHTML='';
+  c.pr.forEach(function(p,i){
+    var cd=document.createElement('div');cd.className='card';
+    var by='';
+    if(p.pp)by='<a class="buy" href="https://www.paypal.com/ncp/payment/'+p.pp+'" target="_blank">Buy Now</a>';
+    else if(c.ppl)by='<a class="buy" href="'+c.ppl+'" target="_blank">Buy Now</a>';
+    cd.innerHTML='<h3>'+p.n+'</h3><div class="pr">'+p.p+'</div><p>'+p.d+'</p>'+by;
+    g.appendChild(cd);
   });
-  // PayPal SDK
-  if(c.paypalClientId && !document.getElementById('pp-sdk')){
-    var s=document.createElement('script');s.id='pp-sdk';
-    s.src='https://www.paypal.com/sdk/js?client-id='+c.paypalClientId+'&components=hosted-buttons&disable-funding=venmo&currency=CAD';
-    s.onload=function(){
-      c.products.forEach(function(p,i){
-        if(p.pp){var el=document.getElementById('ppr-'+i);if(el)paypal.HostedButtons({hostedButtonId:p.pp}).render('#ppr-'+i)}
-      });
-    };
-    document.head.appendChild(s);
-  }
 }
-function ge(id){return document.getElementById(id)}
-function scrollTo(id){ge(id).scrollIntoView({behavior:'smooth'})}
-
-// Admin
-function popAdmin(){
-  var c=C();
-  ge('cfg-title').value=c.title;ge('cfg-hero-title').value=c.heroTitle;
-  ge('cfg-hero-text').value=c.heroText;ge('cfg-hero-cta').value=c.heroCta;
-  ge('cfg-hero-img').value=c.heroImg||'';ge('cfg-about').value=c.about;ge('cfg-contact').value=c.contact;
-  ge('cfg-paypal-clientid').value=c.paypalClientId||'';ge('cfg-paypal').value=c.paypal||'';
-  rProd(c.products);
-}
-function rProd(p){
-  var l=ge('prod-list');l.innerHTML='';
-  p.forEach(function(p,i){
-    var d=document.createElement('div');d.style.cssText='background:rgba(30,10,50,.5);padding:12px;border-radius:6px;margin-bottom:8px';
-    d.innerHTML=
-      '<div style="display:flex;gap:8px;flex-wrap:wrap">'+
-      '<input type="text" placeholder="Name" value="'+p.n+'" data-pid="'+i+'" data-f="n" style="flex:2;padding:6px;background:#10061c;border:1px solid rgba(255,100,180,.2);color:#e0d0f0;border-radius:4px;font-size:.85em">'+
-      '<input type="text" placeholder="Price" value="'+p.p+'" data-pid="'+i+'" data-f="p" style="flex:1;padding:6px;background:#10061c;border:1px solid rgba(255,100,180,.2);color:#e0d0f0;border-radius:4px;font-size:.85em">'+
-      '<button onclick="rmProd('+i+')" style="padding:4px 10px;background:#401020;color:#f0a0b0;border:none;border-radius:4px;cursor:pointer;font-size:.8em">X</button>'+
-      '</div><textarea placeholder="Description" data-pid="'+i+'" data-f="d" style="width:100%;margin-top:6px;padding:6px;background:#10061c;border:1px solid rgba(255,100,180,.2);color:#e0d0f0;border-radius:4px;font-size:.85em;min-height:40px;resize:vertical">'+p.d+'</textarea>'+
-      '<input type="text" placeholder="PayPal Hosted Button ID" value="'+(p.pp||'')+'" data-pid="'+i+'" data-f="pp" style="width:100%;margin-top:4px;padding:6px;background:#10061c;border:1px solid rgba(255,100,180,.2);color:#e0d0f0;border-radius:4px;font-size:.85em">';
+function AP(){var c=CF();c.pr.push({n:'New',d:'',p:'$0.00',pp:''});localStorage.lz=JSON.stringify(c);RP(c.pr)}
+function RM(i){var c=CF();c.pr.splice(i,1);localStorage.lz=JSON.stringify(c);RP(c.pr)}
+function RP(pr){
+  var l=E('pl');l.innerHTML='';
+  pr.forEach(function(p,i){
+    var d=document.createElement('div');
+    d.style.cssText='background:rgba(30,10,50,.5);padding:12px;border-radius:6px;margin-bottom:8px';
+    d.innerHTML='<div style="display:flex;gap:8px;flex-wrap:wrap">'+
+      '<input data-pid="'+i+'" data-f="n" placeholder="Name" value="'+p.n+'" style="flex:2;padding:6px;background:#10061c;border:1px solid rgba(255,100,180,.2);color:#e0d0f0;border-radius:4px;font-size:.85em">'+
+      '<input data-pid="'+i+'" data-f="p" placeholder="Price" value="'+p.p+'" style="flex:1;padding:6px;background:#10061c;border:1px solid rgba(255,100,180,.2);color:#e0d0f0;border-radius:4px;font-size:.85em">'+
+      '<button onclick="RM('+i+')" style="padding:4px 10px;background:#401020;color:#f0a0b0;border:none;border-radius:4px;cursor:pointer;font-size:.8em">X</button></div>'+
+      '<textarea data-pid="'+i+'" data-f="d" placeholder="Description" style="width:100%;margin-top:6px;padding:6px;background:#10061c;border:1px solid rgba(255,100,180,.2);color:#e0d0f0;border-radius:4px;font-size:.85em;min-height:40px;resize:vertical">'+p.d+'</textarea>'+
+      '<input data-pid="'+i+'" data-f="pp" placeholder="PayPal Button ID" value="'+(p.pp||'')+'" style="width:100%;margin-top:4px;padding:6px;background:#10061c;border:1px solid rgba(255,100,180,.2);color:#e0d0f0;border-radius:4px;font-size:.85em">';
     l.appendChild(d);
   });
 }
-function addProd(){var c=C();c.products.push({n:'New',d:'',p:'$0.00',pp:''});S(c);rProd(c.products)}
-function rmProd(i){var c=C();c.products.splice(i,1);S(c);rProd(c.products)}
-
-function gv(id){var e=ge(id);return e?e.value:''}
-
-  var c=C();
-  c.title=ge('cfg-title').value||c.title;c.heroTitle=ge('cfg-hero-title').value||c.heroTitle;
-  c.heroText=ge('cfg-hero-text').value||c.heroText;c.heroCta=ge('cfg-hero-cta').value||c.heroCta;
-  c.heroImg=ge('cfg-hero-img').value;c.about=ge('cfg-about').value||c.about;c.contact=ge('cfg-contact').value||c.contact;
-  c.paypalClientId=ge('cfg-paypal-clientid').value;c.paypal=ge('cfg-paypal').value;
-  document.querySelectorAll('#prod-list [data-f]').forEach(function(el){
-    var i=parseInt(el.dataset.pid),f=el.dataset.f;
-    if(c.products[i])c.products[i][f]=el.value;
-  });
-  S(c);load();ge('admin-msg').textContent='Saved!';setTimeout(function(){ge('admin-msg').textContent=''},2000);
+function RS(){if(confirm('Reset all?')){localStorage.removeItem('lz');PA();LD()}}
+function PA(){
+  var c=CF();
+  E('f0').value=c.title;E('f1').value=c.ht;E('f2').value=c.hp;E('f3').value=c.hc;
+  E('f4').value=c.at;E('f5').value=c.ct;E('f6').value=c.cid;E('f7').value=c.ppl;
+  RP(c.pr);
 }
-function resetCfg(){if(confirm('Reset?')){localStorage.removeItem('lz_config');popAdmin();load()}}
-function adminLogin(){
-  if(ge('admin-pass').value==='lucky2026'){ge('admin-login').classList.add('hidden');ge('admin-panel').classList.remove('hidden');popAdmin()}
-  else alert('Wrong password');
-}
-function exitAdmin(){document.body.classList.remove('admin-mode');history.pushState(null,'','/')}
-if(location.hash==='#admin')document.body.classList.add('admin-mode');
-window.addEventListener('hashchange',function(){document.body.classList.toggle('admin-mode',location.hash==='#admin')});
-
-// Stars
-var cvs=document.getElementById('stars'),ctx=cvs.getContext('2d'),st=[],W,H;
-function iS(){W=cvs.width=innerWidth;H=cvs.height=innerHeight;st=[];for(var i=0;i<160;i++)st.push({x:Math.random()*W,y:Math.random()*H,r:.3+Math.random()*2.2,s:.2+Math.random()*1.5,a:.25+Math.random()*.6,p:Math.random()>.7})}
-function dS(){ctx.clearRect(0,0,W,H);var t=Date.now()*.001;st.forEach(function(s){var tw=.5+.5*Math.sin(t*s.s+s.p*10),a=s.a*tw*220;if(a<10)return;ctx.beginPath();ctx.fillStyle=s.p?'rgba(255,150,210,'+a/255+')':'rgba(220,215,245,'+a/255+')';ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fill()});requestAnimationFrame(dS)}
-iS();dS();addEventListener('resize',iS);
-load();
+function AL(){if(E('apw').value==='lucky2026'){E('al').classList.add('hid');E('ap').classList.remove('hid');PA()}else alert('Wrong')}
+function XA(){document.body.classList.remove('am');history.pushState(null,'','/')}
+if(location.hash==='#admin')document.body.classList.add('am');
+window.addEventListener('hashchange',function(){document.body.classList.toggle('am',location.hash==='#admin')});
+var cv=document.getElementById('s'),cx=cv.getContext('2d'),st=[],W,H;
+function IS(){W=cv.width=innerWidth;H=cv.height=innerHeight;st=[];for(var i=0;i<160;i++)st.push({x:Math.random()*W,y:Math.random()*H,r:.3+Math.random()*2.2,s:.2+Math.random()*1.5,a:.25+Math.random()*.6,p:Math.random()>.7})}
+function DS(){cx.clearRect(0,0,W,H);var t=Date.now()*.001;st.forEach(function(s){var tw=.5+.5*Math.sin(t*s.s+s.p*10),a=s.a*tw*220;if(a<10)return;cx.beginPath();cx.fillStyle=s.p?'rgba(255,150,210,'+a/255+')':'rgba(220,215,245,'+a/255+')';cx.arc(s.x,s.y,s.r,0,Math.PI*2);cx.fill()});requestAnimationFrame(DS)}
+IS();DS();addEventListener('resize',IS);
+LD();
 </script>
 </body>
 </html>
