@@ -50,6 +50,16 @@ body.admin-mode .admin{display:block}
 .admin-login .btn{margin-top:10px}
 .hidden{display:none}
 </style>
+<script>
+(function(){
+  var cfg=getCfg();
+  if(!cfg.paypalClientId) return;
+  var s=document.createElement('script');
+  s.src='https://www.paypal.com/sdk/js?client-id='+cfg.paypalClientId+'&components=hosted-buttons&disable-funding=venmo&currency=CAD';
+  s.onload=function(){ renderPayPalButtons() };
+  document.head.appendChild(s);
+})();
+</script>
 </head>
 <body>
 <canvas id="stars"></canvas>
@@ -106,7 +116,7 @@ body.admin-mode .admin{display:block}
       <label>Contact Info</label><textarea id="cfg-contact"></textarea>
       <hr>
       <h3>Payment Methods</h3>
-      <label>PayPal URL</label><input type="url" id="cfg-paypal" placeholder="https://paypal.me/...">
+      <label>PayPal Client ID</label><input type="text" id="cfg-paypal-clientid" placeholder="BAAe..."><label>PayPal URL</label><input type="url" id="cfg-paypal" placeholder="https://paypal.me/...">
       <label>Cash App Tag</label><input type="text" id="cfg-cashapp" placeholder="$YourTag">
       <label>Bitcoin Address</label><input type="text" id="cfg-btc" placeholder="bc1...">
       <hr>
@@ -124,15 +134,16 @@ body.admin-mode .admin{display:block}
 <script>
 const ADMIN_PASS = 'lucky2026';
 const DEFAULT = {
+  paypalClientId:'BAAeYT9g_f0qBpNVSHaP_UzFeSx2meiA8vOt3HGfc7jHwdycK1D0gYTt0pJwoU60VAQnhPi9xdIvaXb7KA',
   title:'Lucky Zen Software', heroTitle:'Lucky Zen Software',
   heroText:'Next-gen controller scripting engine with auto green, dribble combos, and competitive mods for every game.',
   heroCta:'View Products', heroImg:'', about:'Lucky Zen Software provides premium controller scripting tools for competitive gamers. Built with love, designed for dominance.',
   contact:'DM us on Discord or email support@luckyzensoftware.com',
   paypal:'', cashapp:'', btc:'',
   products:[
-    {name:'Weekly Key',desc:'7 days of full access to all gamepacks and mods.',price:'$9.99',link:''},
-    {name:'Monthly Key',desc:'30 days of unlimited scripting, updates included.',price:'$24.99',link:''},
-    {name:'Lifetime Key',desc:'One-time payment. Lifetime access to everything.',price:'$79.99',link:''}
+    {paypalId:'EEK2HJL4EE5KG',name:'Weekly Key',desc:'7 days of full access to all gamepacks and mods.',price:'$9.99',link:''},
+    {paypalId:'',name:'Monthly Key',desc:'30 days of unlimited scripting, updates included.',price:'$24.99',link:''},
+    {paypalId:'',name:'Lifetime Key',desc:'One-time payment. Lifetime access to everything.',price:'$79.99',link:''}
   ]
 };
 
@@ -157,9 +168,17 @@ function drawStars(){
 initStars();drawStars();window.addEventListener('resize',initStars);
 
 // ── Config ──────────────────────────────────────
-function getCfg(){try{return JSON.parse(localStorage.getItem('lz_config'))||DEFAULT}catch(e){return DEFAULT}}
+function getCfg(){try{var s=localStorage.getItem('lz_config');if(s){var c=JSON.parse(s);return Object.assign({},DEFAULT,c,{products:DEFAULT.products.map(function(dp,i){var sp=c.products&&c.products[i]?c.products[i]:{};return Object.assign({},dp,sp)})})}}catch(e){}return DEFAULT}
 function setCfg(c){localStorage.setItem('lz_config',JSON.stringify(c))}
 
+function renderPayPalButtons(){
+  document.querySelectorAll('.paypal-hosted').forEach(function(el){
+    var id=el.getAttribute('data-ppid');
+    if(id && window.paypal){
+      paypal.HostedButtons({ hostedButtonId: id }).render(el);
+    }
+  });
+}
 function loadConfig(){
   const c=getCfg();
   document.getElementById('hero-title').textContent=c.heroTitle;
@@ -177,7 +196,7 @@ function loadConfig(){
   c.products.forEach((p,i)=>{
     const card=document.createElement('div');card.className='card';
     card.innerHTML=`<h3>${p.name}</h3><div class="price">${p.price}</div><p>${p.desc}</p>`;
-    if(c.paypal||c.cashapp||c.btc||p.link){
+    if(p.paypalId){var ppDiv=document.createElement("div");ppDiv.className="paypal-hosted";ppDiv.setAttribute("data-ppid",p.paypalId);card.appendChild(ppDiv)}else if(c.paypal||c.cashapp||c.btc||p.link){
       const btn=document.createElement('a');btn.className='buy-btn';btn.textContent='Buy Now';
       btn.href=p.link||buildPayLink(p,c);btn.target='_blank';card.appendChild(btn)
     }
@@ -200,6 +219,7 @@ function populateAdmin(){
   document.getElementById('cfg-hero-img').value=c.heroImg;
   document.getElementById('cfg-about').value=c.about;
   document.getElementById('cfg-contact').value=c.contact;
+  document.getElementById('cfg-paypal-clientid').value=c.paypalClientId||'';
   document.getElementById('cfg-paypal').value=c.paypal;
   document.getElementById('cfg-cashapp').value=c.cashapp;
   document.getElementById('cfg-btc').value=c.btc;
@@ -238,6 +258,7 @@ function saveConfig(){
   c.heroImg=document.getElementById('cfg-hero-img').value;
   c.about=document.getElementById('cfg-about').value||c.about;
   c.contact=document.getElementById('cfg-contact').value||c.contact;
+  c.paypalClientId=document.getElementById('cfg-paypal-clientid').value;
   c.paypal=document.getElementById('cfg-paypal').value;
   c.cashapp=document.getElementById('cfg-cashapp').value;
   c.btc=document.getElementById('cfg-btc').value;
