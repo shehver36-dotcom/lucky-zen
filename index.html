@@ -181,18 +181,40 @@ function loadConfig(){
   c.products.forEach((p,i)=>{
     const card=document.createElement('div');card.className='card';
     card.innerHTML=`<h3>${p.name}</h3><div class="price">${p.price}</div><p>${p.desc}</p>`;
-    if(p.paypalId||c.paypal||c.cashapp||c.btc||p.link){
-      const btn=document.createElement('a');btn.className='buy-btn';btn.textContent='Buy Now';
-      btn.href=p.link||buildPayLink(p,c);btn.target='_blank';card.appendChild(btn)
+        if(p.paypalId && c.paypalClientId){
+      var ppDiv=document.createElement('div');
+      ppDiv.id='pp-container-'+i;
+      ppDiv.style.marginTop='10px';
+      card.appendChild(ppDiv);
+    } else if(c.paypal||c.cashapp||c.btc||p.link){
+      var btn=document.createElement('a');btn.className='buy-btn';btn.textContent='Buy Now';
+      btn.href=p.link||buildPayLink(p,c);btn.target='_blank';card.appendChild(btn);
     }
     grid.appendChild(card)
+  }
+
+  // Load PayPal SDK if needed
+  if(c.paypalClientId){
+    (function loadPayPal(){
+      if(document.querySelector('.paypal-hosted')||document.querySelector('[id^=pp-container-]')){
+        var script=document.createElement('script');
+        script.src='https://www.paypal.com/sdk/js?client-id='+c.paypalClientId+'&components=hosted-buttons&disable-funding=venmo&currency=CAD';
+        script.onload=function(){
+          c.products.forEach(function(p,i){
+            if(p.paypalId){
+              var el=document.getElementById('pp-container-'+i);
+              if(el && window.paypal){
+                paypal.HostedButtons({hostedButtonId:p.paypalId}).render('#'+el.id);
+              }
+            }
+          });
+        };
+        document.head.appendChild(script);
+      }
+    })();
   })
 }
-function buildPayLink(product,cfg){
-  if(cfg.paypal) return cfg.paypal+'/'+product.price.replace('$','');
-  if(cfg.cashapp) return 'https://cash.app/'+cfg.cashapp.replace('$','');
-  return '#'
-}
+function buildPayLink(product,cfg){return '#'}
 
 // Populate admin fields
 function populateAdmin(){
