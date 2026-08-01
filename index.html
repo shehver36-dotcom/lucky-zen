@@ -98,7 +98,7 @@ function E(id){return document.getElementById(id)}
 function Q(id){E(id).scrollIntoView({behavior:'smooth'})}
 
 // ── Admin Save ─────────────────────────────────
-function SV(){
+function SV(){if(!GHT){E('msg').textContent='Enter GitHub token first';return}var c={};Object.keys(CFG).forEach(function(k){c[k]=CFG[k]});c.title=V('f0');c.ht=V('f1');c.hp=V('f2');c.hc=V('f3');c.at=V('f4');c.ct=V('f5');c.cid=V('f6');c.ppl=V('f7');var is=document.querySelectorAll('#pl [data-f]');for(var j=0;j<is.length;j++){var e=is[j],i=+e.getAttribute('data-pid'),f=e.getAttribute('data-f');if(c.pr[i])c.pr[i][f]=e.value}CFG=c;LD();E('msg').textContent='Publishing...';var wasAm=document.body.classList.contains('am');document.body.classList.remove('am');var newHtml=document.documentElement.outerHTML;if(wasAm)document.body.classList.add('am');var start=newHtml.indexOf('var CFG=');var end=newHtml.indexOf(';var GHO');if(start>=0&&end>start)newHtml=newHtml.substring(0,start+'var CFG='.length)+JSON.stringify(c)+newHtml.substring(end+1);var b64=btoa(unescape(encodeURIComponent('<!DOCTYPE html>\\n'+newHtml)));putFile(b64,function(ok){E('msg').textContent=ok?'Published! Live in ~30s.':'Error - check token permissions.'});}
   if(!GHT){E('msg').textContent='Enter GitHub token first';return}
   var c={};Object.keys(CFG).forEach(function(k){c[k]=CFG[k]});
   c.title=V('f0');c.ht=V('f1');c.hp=V('f2');c.hc=V('f3');c.at=V('f4');c.ct=V('f5');c.cid=V('f6');c.ppl=V('f7');
@@ -121,7 +121,7 @@ function SV(){
   putFile(b64,function(ok){E('msg').textContent=ok?'Published! Live in ~30s.':'Error — check token.'});
 }
 
-function putFile(b64,cb){
+function putFile(b64,cb){var gx=new XMLHttpRequest();gx.open('GET','https://api.github.com/repos/'+GHO+'/'+GHR+'/contents/index.html?ref=main&_='+Date.now(),true);gx.setRequestHeader('Authorization','Bearer '+GHT);gx.setRequestHeader('Accept','application/vnd.github.v3+json');gx.onload=function(){var sha='';try{var r=JSON.parse(gx.responseText);sha=r.sha}catch(e){}var body=JSON.stringify({message:'Update from admin',content:b64,branch:'main',sha:sha});var px=new XMLHttpRequest();px.open('PUT','https://api.github.com/repos/'+GHO+'/'+GHR+'/contents/index.html',true);px.setRequestHeader('Authorization','Bearer '+GHT);px.setRequestHeader('Accept','application/vnd.github.v3+json');px.setRequestHeader('Content-Type','application/json');px.onload=function(){if(px.status===200||px.status===201){var bx=new XMLHttpRequest();bx.open('POST','https://api.github.com/repos/'+GHO+'/'+GHR+'/pages/builds',true);bx.setRequestHeader('Authorization','Bearer '+GHT);bx.setRequestHeader('Accept','application/vnd.github.v3+json');bx.send();cb(true);}else{cb(false)}};px.onerror=function(){cb(false)};px.send(body);};gx.onerror=function(){cb(false)};gx.send();}
   var gx=new XMLHttpRequest();
   gx.open('GET','https://api.github.com/repos/'+GHO+'/'+GHR+'/contents/index.html?ref=main&_='+Date.now());
   gx.setRequestHeader('Authorization','Bearer '+GHT);
