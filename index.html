@@ -88,7 +88,7 @@ function LD(){
   c.pr.forEach(function(p,i){
     var cd=document.createElement('div');cd.className='card';
     var by='';
-    if(p.pp)by='<a class="buy" href="#" onclick="buyNow(p.n.replace('Weekly Key','Weekly').replace('Monthly Key','Monthly').replace('Lifetime Key','Lifetime'),p.p,p.n);return false">Buy Now</a>';
+    if(p.pp)by='<a class="buy" href="https://www.paypal.com/ncp/payment/'+p.pp+'" target="_blank">Buy Now</a>';
     else if(c.ppl)by='<a class="buy" href="'+c.ppl+'" target="_blank">Buy Now</a>';
     cd.innerHTML='<h3>'+p.n+'</h3><div class="pr">'+p.p+'</div><p>'+p.d+'</p>'+by;
     g.appendChild(cd);
@@ -104,7 +104,25 @@ function SV(){
   c.title=V('f0');c.ht=V('f1');c.hp=V('f2');c.hc=V('f3');c.at=V('f4');c.ct=V('f5');c.cid=V('f6');c.ppl=V('f7');
   var is=document.querySelectorAll('#pl [data-f]');
   for(var j=0;j<is.length;j++){var e=is[j],i=+e.getAttribute('data-pid'),f=e.getAttribute('data-f');if(c.pr[i])c.pr[i][f]=e.value}
-  CFG=c;LD();
+  CFG=c;// Hijack Buy Now buttons to show registration modal
+setTimeout(function(){
+  var btns=document.querySelectorAll('.buy');
+  btns.forEach(function(btn,i){
+    btn.href='#';
+    btn.removeAttribute('target');
+    btn.onclick=function(){
+      var card=btn.closest('.card');
+      var name=card.querySelector('h3').textContent;
+      var price=card.querySelector('.pr').textContent;
+      var type='';
+      if(name.indexOf('Week')>=0)type='Weekly';
+      else if(name.indexOf('Month')>=0)type='Monthly';
+      else if(name.indexOf('Life')>=0)type='Lifetime';
+      buyNow(type,price,name);
+      return false;
+    };
+  });
+},500);LD();
   
   // Build new HTML with updated config baked in
   var newHtml=document.documentElement.outerHTML;
@@ -171,7 +189,25 @@ function RP(){
     l.appendChild(d);
   });
 }
-function RS(){var def={title:'Lucky Zen Software',ht:'Lucky Zen Software',hp:'Next-gen controller scripting engine with auto green, dribble combos, and competitive mods for every game.',hc:'View Products',at:'Lucky Zen Software provides premium controller scripting tools for competitive gamers. Built with love, designed for dominance.',ct:'DM us on Discord or email support@luckyzensoftware.com',cid:'BAAeYT9g_f0qBpNVSHaP_UzFeSx2meiA8vOt3HGfc7jHwdycK1D0gYTt0pJwoU60VAQnhPi9xdIvaXb7KA',ppl:'',pr:[{n:'Weekly Key',d:'7 days full access to all gamepacks and mods.',p:'$5',pp:'EEK2HJL4EE5KG'},{n:'Monthly Key',d:'30 days unlimited scripting, updates included.',p:'$15',pp:'9CK3MLQXZZSLE'},{n:'Lifetime Key',d:'One-time payment. Lifetime access to everything.',p:'$65',pp:'JSGZ45WWEDBN6'}]};CFG=JSON.parse(JSON.stringify(def));PA();LD();E('msg').textContent='Reset to defaults. Save to publish.'}
+function RS(){var def={title:'Lucky Zen Software',ht:'Lucky Zen Software',hp:'Next-gen controller scripting engine with auto green, dribble combos, and competitive mods for every game.',hc:'View Products',at:'Lucky Zen Software provides premium controller scripting tools for competitive gamers. Built with love, designed for dominance.',ct:'DM us on Discord or email support@luckyzensoftware.com',cid:'BAAeYT9g_f0qBpNVSHaP_UzFeSx2meiA8vOt3HGfc7jHwdycK1D0gYTt0pJwoU60VAQnhPi9xdIvaXb7KA',ppl:'',pr:[{n:'Weekly Key',d:'7 days full access to all gamepacks and mods.',p:'$5',pp:'EEK2HJL4EE5KG'},{n:'Monthly Key',d:'30 days unlimited scripting, updates included.',p:'$15',pp:'9CK3MLQXZZSLE'},{n:'Lifetime Key',d:'One-time payment. Lifetime access to everything.',p:'$65',pp:'JSGZ45WWEDBN6'}]};CFG=JSON.parse(JSON.stringify(def));PA();// Hijack Buy Now buttons to show registration modal
+setTimeout(function(){
+  var btns=document.querySelectorAll('.buy');
+  btns.forEach(function(btn,i){
+    btn.href='#';
+    btn.removeAttribute('target');
+    btn.onclick=function(){
+      var card=btn.closest('.card');
+      var name=card.querySelector('h3').textContent;
+      var price=card.querySelector('.pr').textContent;
+      var type='';
+      if(name.indexOf('Week')>=0)type='Weekly';
+      else if(name.indexOf('Month')>=0)type='Monthly';
+      else if(name.indexOf('Life')>=0)type='Lifetime';
+      buyNow(type,price,name);
+      return false;
+    };
+  });
+},500);LD();E('msg').textContent='Reset to defaults. Save to publish.'}
 function PA(){E('f0').value=CFG.title;E('f1').value=CFG.ht;E('f2').value=CFG.hp;E('f3').value=CFG.hc;E('f4').value=CFG.at;E('f5').value=CFG.ct;E('f6').value=CFG.cid;E('f7').value=CFG.ppl;RP()}
 function AL(){if(E('apw').value!=='lucky2026'){alert('Wrong password');return}var tk=E('atk').value.trim();if(!tk){alert('Enter GitHub token');return}GHT=tk;E('al').classList.add('hid');E('ap').classList.remove('hid');PA()}
 function XA(){document.body.classList.remove('am');history.pushState(null,'','/')}
@@ -181,7 +217,25 @@ var cv=document.getElementById('s'),cx=cv.getContext('2d'),st=[],W,H;
 function IS(){W=cv.width=innerWidth;H=cv.height=innerHeight;st=[];for(var i=0;i<160;i++)st.push({x:Math.random()*W,y:Math.random()*H,r:.3+Math.random()*2.2,s:.2+Math.random()*1.5,a:.25+Math.random()*.6,p:Math.random()>.7})}
 function DS(){cx.clearRect(0,0,W,H);var t=Date.now()*.001;st.forEach(function(s){var tw=.5+.5*Math.sin(t*s.s+s.p*10),a=s.a*tw*220;if(a<10)return;cx.beginPath();cx.fillStyle=s.p?'rgba(255,150,210,'+a/255+')':'rgba(220,215,245,'+a/255+')';cx.arc(s.x,s.y,s.r,0,Math.PI*2);cx.fill()});requestAnimationFrame(DS)}
 IS();DS();addEventListener('resize',IS);
-LD();
+// Hijack Buy Now buttons to show registration modal
+setTimeout(function(){
+  var btns=document.querySelectorAll('.buy');
+  btns.forEach(function(btn,i){
+    btn.href='#';
+    btn.removeAttribute('target');
+    btn.onclick=function(){
+      var card=btn.closest('.card');
+      var name=card.querySelector('h3').textContent;
+      var price=card.querySelector('.pr').textContent;
+      var type='';
+      if(name.indexOf('Week')>=0)type='Weekly';
+      else if(name.indexOf('Month')>=0)type='Monthly';
+      else if(name.indexOf('Life')>=0)type='Lifetime';
+      buyNow(type,price,name);
+      return false;
+    };
+  });
+},500);LD();
 </script>
 </body>
 </html>
