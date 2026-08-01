@@ -28,6 +28,15 @@ section h2{font-size:1.8em;color:#ff60b0;margin-bottom:24px;text-align:center}
 .card .buy:hover{background:rgba(255,60,130,.3)}
 .footer{text-align:center;padding:30px;color:#604080;font-size:.85em;border-top:1px solid rgba(255,100,180,.08)}
 .hid{display:none}
+.reg-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);z-index:200;justify-content:center;align-items:center}
+.reg-overlay.show{display:flex}
+.reg-box{background:rgba(16,6,28,.95);border:1px solid rgba(255,100,180,.3);border-radius:12px;padding:30px;width:380px;max-width:90vw;text-align:center}
+.reg-box h3{color:#ff60b0;margin-bottom:16px;font-size:1.2em}
+.reg-box input{width:100%;padding:10px;background:#10061c;border:1px solid rgba(255,100,180,.2);color:#e0d0f0;border-radius:5px;font-size:.9em;margin-bottom:10px;outline:0}
+.reg-box .btn{padding:10px 28px;background:linear-gradient(135deg,#c02060,#8020a0);color:#fff;border:none;border-radius:5px;cursor:pointer;font-weight:600;font-size:.95em;margin-top:8px}
+.key-display{display:none;text-align:center;padding:60px 20px;max-width:600px;margin:0 auto}
+.key-display.show{display:block}
+.key-display .key-box{background:rgba(20,8,40,.8);border:2px solid #ff50a0;border-radius:10px;padding:24px;margin:20px auto;font-family:'Consolas',monospace;font-size:1.2em;color:#ff80b8;word-break:break-all;letter-spacing:2px}
 .adm{display:none}
 body.am .main{display:none}
 body.am .adm{display:block}
@@ -253,7 +262,104 @@ setTimeout(function(){
       return false;
     };
   });
-},500);LD();
+},500);
+function closeReg(){document.getElementById("reg-overlay").classList.remove("show")}
+function startPurchase(){
+  var user=document.getElementById("reg-user").value.trim();
+  if(user.length<3){alert("Username must be at least 3 characters");return}
+  var ppId="";
+  var p=CFG.pr.find(function(x){return x.pp&&x.n.indexOf(PENDING_TYPE)>=0});
+  if(!p) p=CFG.pr.find(function(x){return x.pp});
+  if(p) ppId=p.pp;
+  if(ppId){
+    window.location.href="https://www.paypal.com/ncp/payment/"+ppId;
+  }else{
+    alert("Payment link not configured.");
+  }
+}
+
+var PENDING_TYPE="";
+var HMAC_KEY=[0x8C,0x3F,0x1A,0x7D,0x4E,0x9B,0x2C,0x6F,0x5A,0x1E,0x7B,0x3D,0x8F,0x4C,0x9A,0x2E,0x6D,0x1B,0x7F,0x4A,0x3C,0x8E,0x5D,0x1F];
+
+function checkKeyGen(){
+  var h=location.hash.substring(1);
+  if(!h||h.indexOf(":")<0)return;
+  var p=h.split(":");var type=p[0];var user=decodeURIComponent(p[1]||"");
+  if(!user||user.length<3)return;
+  location.hash="";
+  var tc="",dur=0,ed=0;
+  if(type==="Weekly"){tc="W";dur=7;ed=7}
+  else if(type==="Monthly"){tc="M";dur=30;ed=30}
+  else{tc="L";dur=0;ed=99999}
+  var r="";for(var i=0;i<4;i++)r+=("0"+Math.floor(Math.random()*256).toString(16)).slice(-2);
+  var payload=tc+"-"+dur+"-"+r;
+  var sig=hmac256(payload,HMAC_KEY).substring(0,8).toUpperCase();
+  var key="SZEN-"+payload+"-"+sig;
+  document.getElementById("main").style.display="none";
+  var kd=document.getElementById("key-display");kd.classList.add("show");
+  document.getElementById("key-user").textContent="Username: "+user;
+  document.getElementById("key-plan").textContent="Plan: "+type+" | "+(ed===99999?"Lifetime":ed+" days");
+  document.getElementById("key-value").textContent=key;
+  saveUser(user,key,type,ed);
+}
+
+function saveUser(u,k,t,ed){
+  var gx=new XMLHttpRequest();
+  gx.open("GET","https://api.github.com/repos/"+GHO+"/"+GHR+"/contents/users.json?ref=main&_="+Date.now());
+  gx.setRequestHeader("Authorization","Bearer "+GHT);
+  gx.setRequestHeader("Accept","application/vnd.github.v3+json");
+  gx.onload=function(){
+    var users=[],sha="";
+    try{var r=JSON.parse(gx.responseText);sha=r.sha;users=JSON.parse(atob(r.content.replace(/\s/g,"")))||[]}catch(e){}
+    users.push({user:u,key:k,type:t,expires:ed===99999?"Never":new Date(Date.now()+ed*86400000).toISOString(),created:new Date().toISOString()});
+    var json=JSON.stringify(users,null,2);
+    var b64=btoa(unescape(encodeURIComponent(json)));
+    if(GHT){
+      var px=new XMLHttpRequest();
+      px.open("PUT","https://api.github.com/repos/"+GHO+"/"+GHR+"/contents/users.json");
+      px.setRequestHeader("Authorization","Bearer "+GHT);
+      px.setRequestHeader("Accept","application/vnd.github.v3+json");
+      px.setRequestHeader("Content-Type","application/json");
+      px.send(JSON.stringify({message:"Key for "+u,content:b64,branch:"main",sha:sha}));
+    }
+  };
+  gx.send();
+}
+
+function hmac256(m,k){
+  var kb=[];for(var i=0;i<k.length;i++)kb.push(k[i]);
+  var ip=new Uint8Array(64),op=new Uint8Array(64);
+  for(var i=0;i<64;i++){ip[i]=0x36;op[i]=0x5c}
+  for(var i=0;i<kb.length;i++){ip[i]^=kb[i];op[i]^=kb[i]}
+  var mb=[];for(var i=0;i<m.length;i++)mb.push(m.charCodeAt(i)&255);
+  var inner=[];for(var i=0;i<64;i++)inner.push(ip[i]);for(var i=0;i<mb.length;i++)inner.push(mb[i]);
+  var ih=sha256(inner);
+  var outer=[];for(var i=0;i<64;i++)outer.push(op[i]);for(var i=0;i<ih.length;i++)outer.push(ih[i]);
+  var oh=sha256(outer);
+  var hex="";for(var i=0;i<oh.length;i++)hex+=("0"+oh[i].toString(16)).slice(-2);
+  return hex;
+}
+
+function sha256(d){
+  var h=[0x6a09e667,0xbb67ae85,0x3c6ef372,0xa54ff53a,0x510e527f,0x9b05688c,0x1f83d9ab,0x5be0cd19];
+  var K=[0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0c37,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2];
+  var l=d.length*8;var pad=[];for(var i=0;i<d.length;i++)pad.push(d[i]);pad.push(0x80);
+  while((pad.length+8)%64!==0)pad.push(0);
+  for(var i=0;i<8;i++)pad.push((l>>>((7-i)*8))&255);
+  for(var i=0;i<pad.length;i+=64){
+    var w=[];for(var j=0;j<64;j++)w[j]=j<16?(pad[i+j*4]<<24)|(pad[i+j*4+1]<<16)|(pad[i+j*4+2]<<8)|pad[i+j*4+3]:0;
+    for(var j=16;j<64;j++){var s0=((w[j-15]>>>7)|(w[j-15]<<25))^((w[j-15]>>>18)|(w[j-15]<<14))^(w[j-15]>>>3);var s1=((w[j-2]>>>17)|(w[j-2]<<15))^((w[j-2]>>>19)|(w[j-2]<<13))^(w[j-2]>>>10);w[j]=(w[j-16]+s0+w[j-7]+s1)|0}
+    var a=h[0],b=h[1],c=h[2],d=h[3],e=h[4],f=h[5],g=h[6],hh=h[7];
+    for(var j=0;j<64;j++){var S1=((e>>>6)|(e<<26))^((e>>>11)|(e<<21))^((e>>>25)|(e<<7));var ch=(e&f)^(~e&g);var t1=(hh+S1+ch+K[j]+w[j])|0;var S0=((a>>>2)|(a<<30))^((a>>>13)|(a<<19))^((a>>>22)|(a<<10));var maj=(a&b)^(a&c)^(b&c);var t2=(S0+maj)|0;hh=g;g=f;f=e;e=(d+t1)|0;d=c;c=b;b=a;a=(t1+t2)|0}
+    h[0]=(h[0]+a)|0;h[1]=(h[1]+b)|0;h[2]=(h[2]+c)|0;h[3]=(h[3]+d)|0;h[4]=(h[4]+e)|0;h[5]=(h[5]+f)|0;h[6]=(h[6]+g)|0;h[7]=(h[7]+hh)|0;
+  }
+  var out=[];for(var i=0;i<8;i++){out.push((h[i]>>>24)&255);out.push((h[i]>>>16)&255);out.push((h[i]>>>8)&255);out.push(h[i]&255)}
+  return out;
+}
+
+checkKeyGen();LD();
 </script>
-</body>
+
+<div class="reg-overlay" id="reg-overlay"><div class="reg-box"><h3 id="reg-title">Get Your Key</h3><p style="color:#a088c0;margin-bottom:14px;font-size:.9em" id="reg-plan"></p><input type="text" id="reg-user" placeholder="Choose a username"><button class="btn" onclick="startPurchase()">Continue to PayPal</button><br><a href="#" onclick="closeReg()" style="color:#604080;font-size:.8em;margin-top:8px;display:inline-block">Cancel</a></div></div>
+<div class="key-display" id="key-display"><h2 style="color:#ff60b0">Your Key is Ready</h2><p style="color:#b89ad0;margin:10px 0" id="key-user"></p><p style="color:#a088c0;font-size:.85em" id="key-plan"></p><div class="key-box" id="key-value"></div><p style="color:#a088c0;margin-top:10px;font-size:.85em">Copy this key and paste it into Lucky Services to activate your subscription.</p><button class="btn" onclick="document.getElementById('key-display').classList.remove('show');document.getElementById('main').style.display=''" style="margin-top:16px;padding:10px 24px;background:linear-gradient(135deg,#c02060,#8020a0);color:#fff;border:none;border-radius:5px;cursor:pointer;font-weight:600">Done</button></div></body>
 </html>
