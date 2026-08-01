@@ -88,7 +88,7 @@ function LD(){
   c.pr.forEach(function(p,i){
     var cd=document.createElement('div');cd.className='card';
     var by='';
-    if(p.pp)by='<a class="buy" href="#" onclick="buyNow(\''+p.n.replace('Weekly Key','Weekly').replace('Monthly Key','Monthly').replace('Lifetime Key','Lifetime')+'\',\''+p.p+'\',\''+p.n+'\');return false">Buy Now</a>';
+    if(p.pp)by='<a class="buy" href="#" onclick="buyNow(p.n.replace('Weekly Key','Weekly').replace('Monthly Key','Monthly').replace('Lifetime Key','Lifetime'),p.p,p.n);return false">Buy Now</a>';
     else if(c.ppl)by='<a class="buy" href="'+c.ppl+'" target="_blank">Buy Now</a>';
     cd.innerHTML='<h3>'+p.n+'</h3><div class="pr">'+p.p+'</div><p>'+p.d+'</p>'+by;
     g.appendChild(cd);
