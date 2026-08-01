@@ -17,19 +17,18 @@ nav .links a:hover{color:#ff80b8}
 .hero{text-align:center;padding:80px 20px 60px;max-width:800px;margin:0 auto}
 .hero h1{font-size:2.8em;font-weight:800;color:#ff60b0;margin-bottom:12px;letter-spacing:3px}
 .hero p{font-size:1.15em;color:#b89ad0;line-height:1.7;max-width:600px;margin:0 auto 30px}
-.hero .cta{display:inline-block;padding:12px 36px;background:linear-gradient(135deg,#c02060,#8020a0);color:#fff;text-decoration:none;border-radius:6px;font-weight:600;font-size:1.05em;transition:transform .2s,box-shadow .2s}
-.hero .cta:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(255,60,130,.3)}
-.hero-img{max-width:400px;margin:20px auto;border-radius:12px;border:1px solid rgba(255,100,180,.2);box-shadow:0 0 60px rgba(255,50,120,.15);display:none}
+.hero .cta{display:inline-block;padding:12px 36px;background:linear-gradient(135deg,#c02060,#8020a0);color:#fff;text-decoration:none;border-radius:6px;font-weight:600;font-size:1.05em}
+.hero-img{max-width:400px;margin:20px auto;border-radius:12px;border:1px solid rgba(255,100,180,.2);display:none}
 section{padding:50px 30px;max-width:1100px;margin:0 auto}
-section h2{font-size:1.8em;color:#ff60b0;margin-bottom:24px;text-align:center;letter-spacing:1px}
+section h2{font-size:1.8em;color:#ff60b0;margin-bottom:24px;text-align:center}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}
-.card{background:rgba(20,8,32,.7);border:1px solid rgba(255,100,180,.12);border-radius:10px;padding:24px;transition:transform .2s,border-color .2s;text-align:center}
-.card:hover{transform:translateY(-3px);border-color:rgba(255,100,180,.3)}
-.card h3{color:#ff80b8;margin-bottom:8px;font-size:1.15em}
+.card{background:rgba(20,8,32,.7);border:1px solid rgba(255,100,180,.12);border-radius:10px;padding:24px;text-align:center;transition:transform .2s}
+.card:hover{transform:translateY(-3px)}
+.card h3{color:#ff80b8;font-size:1.15em;margin-bottom:8px}
 .card .price{font-size:1.4em;font-weight:700;color:#ff50a0;margin:10px 0}
-.card p{color:#a088c0;font-size:.9em;line-height:1.5;margin-bottom:14px}
+.card p{color:#a088c0;font-size:.9em;margin-bottom:14px}
 .card .buy-btn{display:inline-block;padding:10px 28px;background:rgba(255,60,130,.18);color:#ff70b0;border:1px solid rgba(255,80,150,.35);border-radius:6px;text-decoration:none;font-size:.95em;font-weight:600;cursor:pointer;transition:all .2s}
-.card .buy-btn:hover{background:rgba(255,60,130,.3);border-color:#ff60b0}
+.card .buy-btn:hover{background:rgba(255,60,130,.3)}
 .footer{text-align:center;padding:30px;color:#604080;font-size:.85em;border-top:1px solid rgba(255,100,180,.08)}
 .admin{display:none}
 body.admin-mode .main{display:none}
@@ -37,7 +36,7 @@ body.admin-mode .admin{display:block}
 .admin-panel{max-width:700px;margin:40px auto;background:rgba(16,6,28,.85);border:1px solid rgba(255,100,180,.2);border-radius:12px;padding:30px}
 .admin-panel h2{color:#ff60b0;margin-bottom:20px}
 .admin-panel label{display:block;color:#c0a0e0;margin:12px 0 4px;font-size:.9em}
-.admin-panel input[type=text],.admin-panel input[type=url],.admin-panel textarea,.admin-panel select{width:100%;padding:10px;background:#10061c;border:1px solid rgba(255,100,180,.2);color:#e0d0f0;border-radius:5px;font-size:.9em;outline:0}
+.admin-panel input[type=text],.admin-panel input[type=url],.admin-panel textarea{width:100%;padding:10px;background:#10061c;border:1px solid rgba(255,100,180,.2);color:#e0d0f0;border-radius:5px;font-size:.9em;outline:0}
 .admin-panel textarea{min-height:80px;resize:vertical}
 .admin-panel input:focus,.admin-panel textarea:focus{border-color:rgba(255,100,180,.5)}
 .admin-panel .btn{padding:10px 24px;background:linear-gradient(135deg,#c02060,#8020a0);color:#fff;border:none;border-radius:5px;cursor:pointer;font-weight:600;font-size:.9em;margin:8px 4px 0 0}
@@ -53,244 +52,140 @@ body.admin-mode .admin{display:block}
 <canvas id="stars"></canvas>
 <div class="content">
 <div class="main" id="main">
-<nav>
-<div class="logo" id="nav-logo">LUCKY ZEN</div>
-<div class="links">
-<a href="#home" onclick="document.getElementById('home').scrollIntoView({behavior:'smooth'})">Home</a>
-<a href="#store" onclick="document.getElementById('store').scrollIntoView({behavior:'smooth'})">Store</a>
-<a href="#about" onclick="document.getElementById('about').scrollIntoView({behavior:'smooth'})">About</a>
-<a href="#contact" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Contact</a>
-</div>
-</nav>
-
-<section class="hero" id="home">
-<h1 id="hero-title">Lucky Zen Software</h1>
-<p id="hero-text">Next-gen controller scripting engine with auto green, dribble combos, and competitive mods for every game.</p>
-<img class="hero-img" id="hero-img" src="" alt="" onerror="this.style.display='none'">
-<a class="cta" href="#store" id="hero-cta">View Products</a>
-</section>
-
-<section id="store">
-<h2>Products &amp; Subscriptions</h2>
-<div class="grid" id="store-grid"></div>
-</section>
-
-<section id="about">
-<h2>About</h2>
-<p style="text-align:center;max-width:700px;margin:0 auto;color:#b89ad0;line-height:1.8" id="about-text">Lucky Zen Software provides premium controller scripting tools for competitive gamers.</p>
-</section>
-
-<section id="contact">
-<h2>Contact</h2>
-<p style="text-align:center;color:#b89ad0" id="contact-text">DM us on Discord or email support@luckyzensoftware.com</p>
-</section>
+<nav><div class="logo" id="nav-logo">LUCKY ZEN</div><div class="links">
+<a href="#home" onclick="scrollTo('home')">Home</a>
+<a href="#store" onclick="scrollTo('store')">Store</a>
+<a href="#about" onclick="scrollTo('about')">About</a>
+<a href="#contact" onclick="scrollTo('contact')">Contact</a>
+</div></nav>
+<section class="hero" id="home"><h1 id="hero-title">Lucky Zen Software</h1><p id="hero-text"></p><img class="hero-img" id="hero-img" src="" onerror="this.style.display='none'"><a class="cta" href="#store" id="hero-cta">View Products</a></section>
+<section id="store"><h2>Products &amp; Subscriptions</h2><div class="grid" id="store-grid"></div></section>
+<section id="about"><h2>About</h2><p style="text-align:center;max-width:700px;margin:0 auto;color:#b89ad0;line-height:1.8" id="about-text"></p></section>
+<section id="contact"><h2>Contact</h2><p style="text-align:center;color:#b89ad0" id="contact-text"></p></section>
 <div class="footer">Lucky Zen Software &copy; 2026</div>
 </div>
-
-<!-- ADMIN -->
 <div class="admin" id="admin">
 <nav><div class="logo">LUCKY ZEN — Admin</div><div class="links"><a href="#" onclick="exitAdmin()">Exit Admin</a></div></nav>
-<div class="admin-login" id="admin-login">
-<h2 style="color:#ff60b0;margin-bottom:16px">Admin Access</h2>
-<input type="password" id="admin-pass" placeholder="Password"><br>
-<button class="btn" onclick="adminLogin()">Enter</button>
-</div>
+<div class="admin-login" id="admin-login"><h2 style="color:#ff60b0;margin-bottom:16px">Admin Access</h2><input type="password" id="admin-pass" placeholder="Password"><br><button class="btn" onclick="adminLogin()">Enter</button></div>
 <div class="admin-panel hidden" id="admin-panel">
 <h2>Site Customization</h2>
-<label>Site Title</label><input type="text" id="cfg-title" placeholder="Lucky Zen Software">
-<label>Hero Headline</label><input type="text" id="cfg-hero-title" placeholder="Lucky Zen Software">
+<label>Site Title</label><input type="text" id="cfg-title">
+<label>Hero Headline</label><input type="text" id="cfg-hero-title">
 <label>Hero Description</label><textarea id="cfg-hero-text"></textarea>
-<label>Hero CTA Text</label><input type="text" id="cfg-hero-cta" placeholder="View Products">
-<label>Hero Image URL</label><input type="url" id="cfg-hero-img" placeholder="https://...">
+<label>Hero CTA Text</label><input type="text" id="cfg-hero-cta">
+<label>Hero Image URL</label><input type="url" id="cfg-hero-img">
 <label>About Text</label><textarea id="cfg-about"></textarea>
 <label>Contact Info</label><textarea id="cfg-contact"></textarea>
-<hr>
-<h3>Payment Methods</h3>
-<label>PayPal Client ID</label><input type="text" id="cfg-paypal-clientid" placeholder="BAAe...">
-<label>PayPal.me Link</label><input type="url" id="cfg-paypal" placeholder="https://paypal.me/...">
-<label>Cash App Tag</label><input type="text" id="cfg-cashapp" placeholder="$YourTag">
-<label>Bitcoin Address</label><input type="text" id="cfg-btc" placeholder="bc1...">
-<hr>
-<h3>Products / Categories</h3>
-<div id="prod-list"></div>
+<hr><h3>Payment Methods</h3>
+<label>PayPal Client ID</label><input type="text" id="cfg-paypal-clientid">
+<label>PayPal.me Link</label><input type="url" id="cfg-paypal">
+<hr><h3>Products</h3><div id="prod-list"></div>
 <button class="btn" onclick="addProduct()">+ Add Product</button>
-<hr>
-<button class="btn" onclick="saveConfig()">Save All Changes</button>
+<hr><button class="btn" onclick="saveConfig()">Save All Changes</button>
 <button class="btn danger" onclick="resetConfig()">Reset to Defaults</button>
-<p id="admin-msg" style="color:#ff80b8;margin-top:10px"></p>
-</div>
-</div>
-</div>
-
+<p id="admin-msg" style="color:#ff80b0;margin-top:10px"></p>
+</div></div></div>
 <script>
-var ADMIN_PASS='lucky2026';
-var DEFAULT={
+var D={
   title:'Lucky Zen Software',heroTitle:'Lucky Zen Software',
   heroText:'Next-gen controller scripting engine with auto green, dribble combos, and competitive mods for every game.',
-  heroCta:'View Products',heroImg:'',about:'Lucky Zen Software provides premium controller scripting tools for competitive gamers. Built with love, designed for dominance.',
+  heroCta:'View Products',heroImg:'',about:'Lucky Zen Software provides premium controller scripting tools for competitive gamers.',
   contact:'DM us on Discord or email support@luckyzensoftware.com',
   paypalClientId:'BAAeYT9g_f0qBpNVSHaP_UzFeSx2meiA8vOt3HGfc7jHwdycK1D0gYTt0pJwoU60VAQnhPi9xdIvaXb7KA',
-  paypal:'',cashapp:'',btc:'',
-  products:[
-    {name:'Weekly Key',desc:'7 days of full access to all gamepacks and mods.',price:'$9.99',link:'',paypalId:'EEK2HJL4EE5KG'},
-    {name:'Monthly Key',desc:'30 days of unlimited scripting, updates included.',price:'$24.99',link:'',paypalId:''},
-    {name:'Lifetime Key',desc:'One-time payment. Lifetime access to everything.',price:'$79.99',link:'',paypalId:''}
+  paypal:'',products:[
+    {n:'Weekly Key',d:'7 days full access to all gamepacks and mods.',p:'$9.99',pp:'EEK2HJL4EE5KG'},
+    {n:'Monthly Key',d:'30 days unlimited scripting, updates included.',p:'$24.99',pp:''},
+    {n:'Lifetime Key',d:'One-time payment. Lifetime access to everything.',p:'$79.99',pp:''}
   ]
 };
+function C(){try{var s=localStorage.lz_config;if(s)return JSON.parse(s)}catch(e){}return JSON.parse(JSON.stringify(D))}
+function S(c){localStorage.lz_config=JSON.stringify(c)}
 
-// ── Stars ────────────────────────
-var canvas=document.getElementById('stars'),ctx=canvas.getContext('2d');
-var stars=[],w,h;
-function initStars(){
-  w=canvas.width=window.innerWidth;h=canvas.height=window.innerHeight;
-  stars=[];for(var i=0;i<160;i++)stars.push({x:Math.random()*w,y:Math.random()*h,r:.3+Math.random()*2.2,s:.2+Math.random()*1.5,a:.25+Math.random()*.6,p:Math.random()>0.7})
-}
-function drawStars(){
-  ctx.clearRect(0,0,w,h);var t=Date.now()*.001;
-  stars.forEach(function(s){
-    var tw=.5+.5*Math.sin(t*s.s+s.p*10),a=s.a*tw*220;
-    if(a<10)return;
-    ctx.beginPath();ctx.fillStyle=s.p?'rgba(255,150,210,'+a/255+')':'rgba(220,215,245,'+a/255+')';
-    ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fill();
-  });
-  requestAnimationFrame(drawStars);
-}
-initStars();drawStars();window.addEventListener('resize',initStars);
-
-// ── Config ────────────────────────
-function getCfg(){
-  try{var s=localStorage.getItem('lz_config');if(s)return JSON.parse(s)}catch(e){}
-  return JSON.parse(JSON.stringify(DEFAULT));
-}
-function setCfg(c){localStorage.setItem('lz_config',JSON.stringify(c))}
-
-function loadPayPalSdk(cfg){
-  if(!cfg.paypalClientId)return;
-  var sid='pp-sdk-loaded';
-  if(document.getElementById(sid))return;
-  var script=document.createElement('script');
-  script.id=sid;
-  script.src='https://www.paypal.com/sdk/js?client-id='+cfg.paypalClientId+'&components=hosted-buttons&disable-funding=venmo&currency=CAD';
-  script.onload=function(){renderPayPalButtons(cfg)};
-  document.head.appendChild(script);
-}
-function renderPayPalButtons(cfg){
-  cfg.products.forEach(function(p,i){
-    if(!p.paypalId)return;
-    var el=document.getElementById('pp-btn-'+i);
-    if(!el||!window.paypal)return;
-    el.innerHTML='';
-    paypal.HostedButtons({hostedButtonId:p.paypalId}).render('#pp-btn-'+i);
-  });
-}
-
-function loadConfig(){
-  var c=getCfg();
-  document.getElementById('hero-title').textContent=c.heroTitle;
-  document.getElementById('hero-text').textContent=c.heroText;
-  document.getElementById('hero-cta').textContent=c.heroCta;
-  document.getElementById('nav-logo').textContent=c.title.substring(0,18).toUpperCase();
-  document.title=c.title;
-  document.getElementById('about-text').textContent=c.about;
-  document.getElementById('contact-text').textContent=c.contact;
-  var img=document.getElementById('hero-img');
-  if(c.heroImg){img.src=c.heroImg;img.style.display=''}else img.style.display='none';
-
-  var grid=document.getElementById('store-grid');
-  grid.innerHTML='';
+function load(){
+  var c=C();
+  ge('hero-title').textContent=c.heroTitle;ge('hero-text').textContent=c.heroText;
+  ge('hero-cta').textContent=c.heroCta;ge('nav-logo').textContent=c.title.substring(0,18).toUpperCase();
+  document.title=c.title;ge('about-text').textContent=c.about;ge('contact-text').textContent=c.contact;
+  var img=ge('hero-img');if(c.heroImg){img.src=c.heroImg;img.style.display=''}else img.style.display='none';
+  var g=ge('store-grid');g.innerHTML='';
   c.products.forEach(function(p,i){
     var card=document.createElement('div');card.className='card';
-    card.innerHTML='<h3>'+p.name+'</h3><div class="price">'+p.price+'</div><p>'+p.desc+'</p>';
-    if(p.paypalId){
-      card.innerHTML+='<div id="pp-btn-'+i+'" style="min-height:40px;margin-top:8px"></div>';
-    }else if(c.paypal||c.cashapp||c.btc||p.link){
-      var btn=document.createElement('a');btn.className='buy-btn';btn.textContent='Buy Now';
-      btn.href=p.link||(c.paypal?c.paypal+'/'+p.price.replace('$',''):'#');
-      btn.target='_blank';card.appendChild(btn);
+    var buy='';
+    if(p.pp){
+      buy='<a class="buy-btn" href="https://www.paypal.com/ncp/payment/'+p.pp+'" target="_blank">Buy Now — PayPal</a>';
+    }else if(c.paypal){
+      buy='<a class="buy-btn" href="'+c.paypal+'/'+p.p.replace('$','')+'" target="_blank">Buy Now</a>';
     }
-    grid.appendChild(card);
+    card.innerHTML='<h3>'+p.n+'</h3><div class="price">'+p.p+'</div><p>'+p.d+'</p>'+buy;
+    g.appendChild(card);
   });
-
-  loadPayPalSdk(c);
+  // PayPal SDK
+  if(c.paypalClientId && !document.getElementById('pp-sdk')){
+    var s=document.createElement('script');s.id='pp-sdk';
+    s.src='https://www.paypal.com/sdk/js?client-id='+c.paypalClientId+'&components=hosted-buttons&disable-funding=venmo&currency=CAD';
+    s.onload=function(){
+      c.products.forEach(function(p,i){
+        if(p.pp){var el=document.getElementById('ppr-'+i);if(el)paypal.HostedButtons({hostedButtonId:p.pp}).render('#ppr-'+i)}
+      });
+    };
+    document.head.appendChild(s);
+  }
 }
+function ge(id){return document.getElementById(id)}
+function scrollTo(id){ge(id).scrollIntoView({behavior:'smooth'})}
 
-// ── Admin ────────────────────────
-function populateAdmin(){
-  var c=getCfg();
-  document.getElementById('cfg-title').value=c.title;
-  document.getElementById('cfg-hero-title').value=c.heroTitle;
-  document.getElementById('cfg-hero-text').value=c.heroText;
-  document.getElementById('cfg-hero-cta').value=c.heroCta;
-  document.getElementById('cfg-hero-img').value=c.heroImg;
-  document.getElementById('cfg-about').value=c.about;
-  document.getElementById('cfg-contact').value=c.contact;
-  document.getElementById('cfg-paypal-clientid').value=c.paypalClientId||'';
-  document.getElementById('cfg-paypal').value=c.paypal||'';
-  document.getElementById('cfg-cashapp').value=c.cashapp||'';
-  document.getElementById('cfg-btc').value=c.btc||'';
-  renderProductFields(c.products);
+// Admin
+function popAdmin(){
+  var c=C();
+  ge('cfg-title').value=c.title;ge('cfg-hero-title').value=c.heroTitle;
+  ge('cfg-hero-text').value=c.heroText;ge('cfg-hero-cta').value=c.heroCta;
+  ge('cfg-hero-img').value=c.heroImg||'';ge('cfg-about').value=c.about;ge('cfg-contact').value=c.contact;
+  ge('cfg-paypal-clientid').value=c.paypalClientId||'';ge('cfg-paypal').value=c.paypal||'';
+  rProd(c.products);
 }
-function renderProductFields(products){
-  var list=document.getElementById('prod-list');
-  list.innerHTML='';
-  products.forEach(function(p,i){
-    var d=document.createElement('div');
-    d.style.cssText='background:rgba(30,10,50,.5);padding:12px;border-radius:6px;margin-bottom:8px';
+function rProd(p){
+  var l=ge('prod-list');l.innerHTML='';
+  p.forEach(function(p,i){
+    var d=document.createElement('div');d.style.cssText='background:rgba(30,10,50,.5);padding:12px;border-radius:6px;margin-bottom:8px';
     d.innerHTML=
       '<div style="display:flex;gap:8px;flex-wrap:wrap">'+
-      '<input type="text" placeholder="Name" value="'+p.name+'" data-pid="'+i+'" data-field="name" style="flex:2;padding:6px;background:#10061c;border:1px solid rgba(255,100,180,.2);color:#e0d0f0;border-radius:4px;font-size:.85em">'+
-      '<input type="text" placeholder="Price" value="'+p.price+'" data-pid="'+i+'" data-field="price" style="flex:1;padding:6px;background:#10061c;border:1px solid rgba(255,100,180,.2);color:#e0d0f0;border-radius:4px;font-size:.85em">'+
-      '<button onclick="removeProduct('+i+')" style="padding:4px 10px;background:#401020;color:#f0a0b0;border:none;border-radius:4px;cursor:pointer;font-size:.8em">X</button>'+
-      '</div>'+
-      '<textarea placeholder="Description" data-pid="'+i+'" data-field="desc" style="width:100%;margin-top:6px;padding:6px;background:#10061c;border:1px solid rgba(255,100,180,.2);color:#e0d0f0;border-radius:4px;font-size:.85em;min-height:40px;resize:vertical">'+p.desc+'</textarea>'+
-      '<input type="text" placeholder="PayPal Hosted Button ID" value="'+(p.paypalId||'')+'" data-pid="'+i+'" data-field="paypalId" style="width:100%;margin-top:4px;padding:6px;background:#10061c;border:1px solid rgba(255,100,180,.2);color:#e0d0f0;border-radius:4px;font-size:.85em">'+
-      '<input type="url" placeholder="Direct link (optional)" value="'+(p.link||'')+'" data-pid="'+i+'" data-field="link" style="width:100%;margin-top:4px;padding:6px;background:#10061c;border:1px solid rgba(255,100,180,.2);color:#e0d0f0;border-radius:4px;font-size:.85em">';
-    list.appendChild(d);
+      '<input type="text" placeholder="Name" value="'+p.n+'" data-pid="'+i+'" data-f="n" style="flex:2;padding:6px;background:#10061c;border:1px solid rgba(255,100,180,.2);color:#e0d0f0;border-radius:4px;font-size:.85em">'+
+      '<input type="text" placeholder="Price" value="'+p.p+'" data-pid="'+i+'" data-f="p" style="flex:1;padding:6px;background:#10061c;border:1px solid rgba(255,100,180,.2);color:#e0d0f0;border-radius:4px;font-size:.85em">'+
+      '<button onclick="rmProd('+i+')" style="padding:4px 10px;background:#401020;color:#f0a0b0;border:none;border-radius:4px;cursor:pointer;font-size:.8em">X</button>'+
+      '</div><textarea placeholder="Description" data-pid="'+i+'" data-f="d" style="width:100%;margin-top:6px;padding:6px;background:#10061c;border:1px solid rgba(255,100,180,.2);color:#e0d0f0;border-radius:4px;font-size:.85em;min-height:40px;resize:vertical">'+p.d+'</textarea>'+
+      '<input type="text" placeholder="PayPal Hosted Button ID" value="'+(p.pp||'')+'" data-pid="'+i+'" data-f="pp" style="width:100%;margin-top:4px;padding:6px;background:#10061c;border:1px solid rgba(255,100,180,.2);color:#e0d0f0;border-radius:4px;font-size:.85em">';
+    l.appendChild(d);
   });
 }
-function addProduct(){
-  var c=getCfg();c.products.push({name:'New Product',desc:'',price:'$0.00',link:'',paypalId:''});setCfg(c);renderProductFields(c.products);
-}
-function removeProduct(i){
-  var c=getCfg();c.products.splice(i,1);setCfg(c);renderProductFields(c.products);
-}
-function saveConfig(){
-  var c=getCfg();
-  c.title=document.getElementById('cfg-title').value||c.title;
-  c.heroTitle=document.getElementById('cfg-hero-title').value||c.heroTitle;
-  c.heroText=document.getElementById('cfg-hero-text').value||c.heroText;
-  c.heroCta=document.getElementById('cfg-hero-cta').value||c.heroCta;
-  c.heroImg=document.getElementById('cfg-hero-img').value;
-  c.about=document.getElementById('cfg-about').value||c.about;
-  c.contact=document.getElementById('cfg-contact').value||c.contact;
-  c.paypalClientId=document.getElementById('cfg-paypal-clientid').value;
-  c.paypal=document.getElementById('cfg-paypal').value;
-  c.cashapp=document.getElementById('cfg-cashapp').value;
-  c.btc=document.getElementById('cfg-btc').value;
-  document.querySelectorAll('#prod-list [data-field]').forEach(function(el){
-    var i=parseInt(el.dataset.pid),f=el.dataset.field;
+function addProd(){var c=C();c.products.push({n:'New',d:'',p:'$0.00',pp:''});S(c);rProd(c.products)}
+function rmProd(i){var c=C();c.products.splice(i,1);S(c);rProd(c.products)}
+function saveCfg(){
+  var c=C();
+  c.title=ge('cfg-title').value||c.title;c.heroTitle=ge('cfg-hero-title').value||c.heroTitle;
+  c.heroText=ge('cfg-hero-text').value||c.heroText;c.heroCta=ge('cfg-hero-cta').value||c.heroCta;
+  c.heroImg=ge('cfg-hero-img').value;c.about=ge('cfg-about').value||c.about;c.contact=ge('cfg-contact').value||c.contact;
+  c.paypalClientId=ge('cfg-paypal-clientid').value;c.paypal=ge('cfg-paypal').value;
+  document.querySelectorAll('#prod-list [data-f]').forEach(function(el){
+    var i=parseInt(el.dataset.pid),f=el.dataset.f;
     if(c.products[i])c.products[i][f]=el.value;
   });
-  setCfg(c);loadConfig();
-  document.getElementById('admin-msg').textContent='Saved!';
-  setTimeout(function(){document.getElementById('admin-msg').textContent=''},2000);
+  S(c);load();ge('admin-msg').textContent='Saved!';setTimeout(function(){ge('admin-msg').textContent=''},2000);
 }
-function resetConfig(){
-  if(confirm('Reset everything to defaults?')){localStorage.removeItem('lz_config');populateAdmin();loadConfig()}
-}
+function resetCfg(){if(confirm('Reset?')){localStorage.removeItem('lz_config');popAdmin();load()}}
 function adminLogin(){
-  if(document.getElementById('admin-pass').value===ADMIN_PASS){
-    document.getElementById('admin-login').classList.add('hidden');
-    document.getElementById('admin-panel').classList.remove('hidden');
-    populateAdmin();
-  }else{alert('Wrong password')}
+  if(ge('admin-pass').value==='lucky2026'){ge('admin-login').classList.add('hidden');ge('admin-panel').classList.remove('hidden');popAdmin()}
+  else alert('Wrong password');
 }
 function exitAdmin(){document.body.classList.remove('admin-mode');history.pushState(null,'','/')}
-if(window.location.hash==='#admin')document.body.classList.add('admin-mode');
-window.addEventListener('hashchange',function(){
-  document.body.classList.toggle('admin-mode',window.location.hash==='#admin');
-});
-loadConfig();
+if(location.hash==='#admin')document.body.classList.add('admin-mode');
+window.addEventListener('hashchange',function(){document.body.classList.toggle('admin-mode',location.hash==='#admin')});
+
+// Stars
+var cvs=document.getElementById('stars'),ctx=cvs.getContext('2d'),st=[],W,H;
+function iS(){W=cvs.width=innerWidth;H=cvs.height=innerHeight;st=[];for(var i=0;i<160;i++)st.push({x:Math.random()*W,y:Math.random()*H,r:.3+Math.random()*2.2,s:.2+Math.random()*1.5,a:.25+Math.random()*.6,p:Math.random()>.7})}
+function dS(){ctx.clearRect(0,0,W,H);var t=Date.now()*.001;st.forEach(function(s){var tw=.5+.5*Math.sin(t*s.s+s.p*10),a=s.a*tw*220;if(a<10)return;ctx.beginPath();ctx.fillStyle=s.p?'rgba(255,150,210,'+a/255+')':'rgba(220,215,245,'+a/255+')';ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fill()});requestAnimationFrame(dS)}
+iS();dS();addEventListener('resize',iS);
+load();
 </script>
 </body>
 </html>
