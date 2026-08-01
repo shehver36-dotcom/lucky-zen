@@ -160,7 +160,9 @@ function rProd(p){
 }
 function addProd(){var c=C();c.products.push({n:'New',d:'',p:'$0.00',pp:''});S(c);rProd(c.products)}
 function rmProd(i){var c=C();c.products.splice(i,1);S(c);rProd(c.products)}
-function saveCfg(){
+
+function gv(id){var e=ge(id);return e?e.value:''}
+
   var c=C();
   c.title=ge('cfg-title').value||c.title;c.heroTitle=ge('cfg-hero-title').value||c.heroTitle;
   c.heroText=ge('cfg-hero-text').value||c.heroText;c.heroCta=ge('cfg-hero-cta').value||c.heroCta;
