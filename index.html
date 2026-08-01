@@ -263,7 +263,12 @@ setTimeout(function(){
     };
   });
 },500);
-function closeReg(){document.getElementById("reg-overlay").classList.remove("show")}
+function buyNow(type,price,name){
+  PENDING_TYPE=type;
+  document.getElementById("reg-title").textContent="Get "+name;
+  document.getElementById("reg-plan").textContent=name+" - "+price;
+  document.getElementById("reg-overlay").classList.add("show");
+}function closeReg(){document.getElementById("reg-overlay").classList.remove("show")}
 function startPurchase(){
   var user=document.getElementById("reg-user").value.trim();
   if(user.length<3){alert("Username must be at least 3 characters");return}
