@@ -101,7 +101,7 @@ var D={
 function C(){try{var s=localStorage.lz_config;if(s)return JSON.parse(s)}catch(e){}return JSON.parse(JSON.stringify(D))}
 function S(c){localStorage.lz_config=JSON.stringify(c)}
 
-function load(){
+function load(){if(localStorage.lz_config){try{var t=JSON.parse(localStorage.lz_config);if(t.products&&t.products.length>0&&(!t.products[0].n||t.products[0].n==='undefined')){localStorage.removeItem('lz_config');location.reload();return}}catch(e){localStorage.removeItem('lz_config');location.reload();return}}
   var c=C();
   ge('hero-title').textContent=c.heroTitle;ge('hero-text').textContent=c.heroText;
   ge('hero-cta').textContent=c.heroCta;ge('nav-logo').textContent=c.title.substring(0,18).toUpperCase();
