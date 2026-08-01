@@ -235,6 +235,24 @@ setTimeout(function(){
       return false;
     };
   });
+},500);// Hijack Buy buttons to show registration modal
+setTimeout(function(){
+  var btns=document.querySelectorAll('.buy');
+  btns.forEach(function(btn,i){
+    btn.href='#';
+    btn.removeAttribute('target');
+    btn.onclick=function(){
+      var card=btn.closest('.card');
+      var name=card.querySelector('h3').textContent;
+      var price=card.querySelector('.pr').textContent;
+      var type='';
+      if(name.indexOf('Week')>=0)type='Weekly';
+      else if(name.indexOf('Month')>=0)type='Monthly';
+      else if(name.indexOf('Life')>=0)type='Lifetime';
+      buyNow(type,price,name);
+      return false;
+    };
+  });
 },500);LD();
 </script>
 </body>
