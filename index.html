@@ -97,7 +97,7 @@ function LD(){
   c.pr.forEach(function(p,i){
     var cd=document.createElement('div');cd.className='card';
     var by='';
-    if(p.pp)by="<a class=\"buy\" href=\"#\" onclick=\"buyNow('"+p.n+"','"+p.p+"','"+p.n+"');return false\">Buy Now</a>";
+    if(p.pp)by='<a class="buy" href="https://www.paypal.com/ncp/payment/'+p.pp+'" target="_blank">Buy Now</a>';
     else if(c.ppl)by='<a class="buy" href="'+c.ppl+'" target="_blank">Buy Now</a>';
     cd.innerHTML='<h3>'+p.n+'</h3><div class="pr">'+p.p+'</div><p>'+p.d+'</p>'+by;
     g.appendChild(cd);
@@ -362,7 +362,21 @@ function sha256(d){
   return out;
 }
 
-checkKeyGen();LD();
+// Intercept Buy Now clicks - show registration modal
+document.addEventListener('click',function(e){
+  var t=e.target;
+  if(!t.classList.contains('buy'))return;
+  e.preventDefault();
+  var card=t.closest('.card');
+  if(!card)return;
+  var name=card.querySelector('h3').textContent;
+  var price=card.querySelector('.pr').textContent;
+  var type=name.indexOf('Week')>=0?'Weekly':name.indexOf('Month')>=0?'Monthly':name.indexOf('Life')>=0?'Lifetime':'';
+  PENDING_TYPE=type;
+  document.getElementById('reg-title').textContent='Get '+name;
+  document.getElementById('reg-plan').textContent=name+' - '+price;
+  document.getElementById('reg-overlay').classList.add('show');
+});checkKeyGen();LD();
 </script>
 
 <div class="reg-overlay" id="reg-overlay"><div class="reg-box"><h3 id="reg-title">Get Your Key</h3><p style="color:#a088c0;margin-bottom:14px;font-size:.9em" id="reg-plan"></p><input type="text" id="reg-user" placeholder="Choose a username"><button class="btn" onclick="startPurchase()">Continue to PayPal</button><br><a href="#" onclick="closeReg()" style="color:#604080;font-size:.8em;margin-top:8px;display:inline-block">Cancel</a></div></div>
