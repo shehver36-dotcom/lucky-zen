@@ -1,0 +1,316 @@
+//═══════════════════════════════════════════════════════════════════
+//  NBA 2K26 — Cronus Zen GPC Script
+//  Auto Green | Dribble Combos | Speed Boost | Post Moves | Defense
+//  Load: Zen Studio > Programmer tab > Open > Compile & Run
+//═══════════════════════════════════════════════════════════════════
+
+#pragma METAINFO("NBA 2K26 Auto Green", 1, 0, "ENI")
+#pragma METAINFO_DESCRIPTION("Auto green release, dribble combos, post moves, defensive assist, speed boost.")
+#pragma METAINFO_AUTHOR("ENI")
+#pragma METAINFO_GAME("NBA 2K26")
+
+// ═══ SHOT TIMING (ms) — tweak to match your jumpshot ═════════════
+int GREEN_STAND_MS   = 500;
+int GREEN_MOVING_MS  = 510;
+int GREEN_PULLUP_MS  = 525;
+int GREEN_FADE_MS    = 590;
+int CONTESTED_OFFSET = 35;
+
+// ═══ MOD TOGGLES — 1 = on, 0 = off ══════════════════════════════
+int MOD_AUTO_GREEN   = 1;
+int MOD_ADAPTIVE     = 1;
+int MOD_DRIBBLE_GOD  = 1;
+int MOD_SPEED_BOOST  = 1;
+int MOD_AUTO_STEAL   = 1;
+int MOD_AUTO_BLOCK   = 0;
+int MOD_POST_MOVES   = 1;
+int MOD_QUICK_STOP   = 0;
+int MOD_AUTO_REBOUND = 1;
+
+// ═══ INTERVALS (ms) ═════════════════════════════════════════════
+int STEAL_INTERVAL   = 120;
+int BLOCK_INTERVAL   = 80;
+int REBOUND_INTERVAL = 300;
+int COMBO_SPEED      = 40;
+int COMBO_SPEED_HALF;
+
+// ═══ STATE — internal, do not edit ══════════════════════════════
+int shot_active;
+int shot_timer;
+int shot_done;
+
+int steal_cnt;
+int block_cnt;
+int rebound_cnt;
+int combo_busy;
+int rt_tap_cnt;
+int rt_tap_tmr;
+
+int lsx, lsy, rsx, rsy;
+int moving, sprinting, fading, contested;
+int target_ms, adaptive_ms;
+int btn_x, btn_rt, btn_lt, btn_rb, btn_b, btn_ls;
+
+// ═══ MAIN LOOP ══════════════════════════════════════════════════
+main {
+
+    COMBO_SPEED_HALF = COMBO_SPEED / 2;
+    if(COMBO_SPEED_HALF < 1) COMBO_SPEED_HALF = 1;
+
+    // ── Read sticks ───────────────────────────────
+    lsx = get_val(STICK_1_X);
+    lsy = get_val(STICK_1_Y);
+    rsx = get_val(STICK_2_X);
+    rsy = get_val(STICK_2_Y);
+
+    // ── Read buttons ──────────────────────────────
+    btn_x  = get_val(XB1_X);
+    btn_rt = get_val(XB1_RT);
+    btn_lt = get_val(XB1_LT);
+    btn_rb = get_val(XB1_RB);
+    btn_b  = get_val(XB1_B);
+    btn_ls = get_val(XB1_LS);
+
+    // ── Movement state ────────────────────────────
+    moving    = (abs(lsx) > 30 || abs(lsy) > 30);
+    sprinting = btn_rt;
+    fading    = (abs(lsy) > 50 && abs(lsx) < 20);
+    contested = btn_lt;
+
+    // ── Adaptive target timing ────────────────────
+    if(MOD_ADAPTIVE) {
+        if(fading) {
+            adaptive_ms = GREEN_FADE_MS;
+        } else if(sprinting && moving) {
+            adaptive_ms = GREEN_PULLUP_MS;
+        } else if(moving) {
+            adaptive_ms = GREEN_MOVING_MS;
+        } else {
+            adaptive_ms = GREEN_STAND_MS;
+        }
+        if(contested) {
+            adaptive_ms = adaptive_ms + CONTESTED_OFFSET;
+        }
+    } else {
+        adaptive_ms = GREEN_STAND_MS;
+    }
+    target_ms = adaptive_ms;
+
+    // ── Auto Green / Perfect Release ──────────────
+    if(MOD_AUTO_GREEN) {
+        if(btn_x) {
+            if(!shot_active) {
+                shot_active = TRUE;
+                shot_done   = FALSE;
+                shot_timer  = 0;
+            }
+            if(!shot_done) {
+                shot_timer = shot_timer + 1;
+                if(shot_timer >= target_ms) {
+                    set_val(XB1_X, 0);
+                    shot_done = TRUE;
+                }
+            }
+        } else {
+            shot_active = FALSE;
+            shot_done   = FALSE;
+        }
+        if(shot_done) {
+            set_val(XB1_X, 0);
+        }
+    }
+
+    // ── Dribble God Combos ────────────────────────
+    if(MOD_DRIBBLE_GOD && !combo_busy) {
+        // Momentum crossover: RB when LS is neutral
+        if(event_press(XB1_RB) && !moving) {
+            combo_run(MomentumCross);
+        }
+        // Behind the back: LS pulled back + X
+        if(event_press(XB1_X) && abs(lsy) > 80 && abs(lsx) < 20) {
+            combo_run(BehindBack);
+        }
+        // Spin move: B while sprinting
+        if(event_press(XB1_B) && sprinting) {
+            combo_run(SpinMove);
+        }
+        // Step-back: sprinting + LS click
+        if(sprinting && event_press(XB1_LS)) {
+            combo_run(StepBack);
+        }
+        // Size-up: double-tap RT
+        if(event_press(XB1_RT)) {
+            rt_tap_cnt = rt_tap_cnt + 1;
+            rt_tap_tmr = 0;
+        }
+        rt_tap_tmr = rt_tap_tmr + 1;
+        if(rt_tap_tmr > 150) {
+            rt_tap_cnt = 0;
+            rt_tap_tmr = 0;
+        }
+        if(rt_tap_cnt >= 2) {
+            combo_run(SizeUp);
+            rt_tap_cnt = 0;
+        }
+    }
+
+    // ── Speed Boost ───────────────────────────────
+    if(MOD_SPEED_BOOST && !combo_busy) {
+        if(lsy > 70 && abs(lsx) < 30 && sprinting && event_press(XB1_LS)) {
+            combo_run(SpeedBurst);
+        }
+    }
+
+    // ── Auto Steal ────────────────────────────────
+    if(MOD_AUTO_STEAL && btn_lt) {
+        steal_cnt = steal_cnt + 1;
+        if(steal_cnt % 60 < 30) {
+            set_val(XB1_X, 100);
+        } else {
+            set_val(XB1_X, 0);
+        }
+    } else {
+        steal_cnt = 0;
+    }
+
+    // ── Auto Block ────────────────────────────────
+    if(MOD_AUTO_BLOCK && btn_lt) {
+        block_cnt = block_cnt + 1;
+        if(block_cnt % 40 == 0) {
+            set_val(XB1_Y, 100);
+        } else if(block_cnt % 40 == 20) {
+            set_val(XB1_Y, 0);
+        }
+    } else {
+        block_cnt = 0;
+    }
+
+    // ── Post Moves ────────────────────────────────
+    if(MOD_POST_MOVES && btn_lt && !sprinting && !combo_busy) {
+        if(abs(lsx) > 70 && event_press(XB1_X)) {
+            combo_run(PostDropStep);
+        }
+        if(abs(lsx) > 70 && event_press(XB1_B)) {
+            combo_run(PostSpin);
+        }
+        if(lsy > 70 && event_press(XB1_X)) {
+            combo_run(PostUpUnder);
+        }
+    }
+
+    // ── Quick Stop ────────────────────────────────
+    if(MOD_QUICK_STOP && !combo_busy) {
+        if(sprinting && event_press(XB1_X)) {
+            combo_run(QuickStop);
+        }
+    }
+
+    // ── Auto Rebound ──────────────────────────────
+    if(MOD_AUTO_REBOUND && btn_lt) {
+        if(abs(lsx) < 25 && abs(lsy) < 25) {
+            rebound_cnt = rebound_cnt + 1;
+            if(rebound_cnt % 150 == 0) {
+                set_val(XB1_Y, 100);
+            } else if(rebound_cnt % 150 == 2) {
+                set_val(XB1_Y, 0);
+            }
+        }
+    } else {
+        rebound_cnt = 0;
+    }
+}
+
+// ═══ DRIBBLE COMBOS ═════════════════════════════════════════════
+combo MomentumCross {
+    combo_busy = TRUE;
+    set_val(STICK_2_X,  100); set_val(STICK_2_Y,    0); wait(COMBO_SPEED);
+    set_val(STICK_2_X,    0); set_val(STICK_2_Y,    0); wait(COMBO_SPEED);
+    set_val(STICK_2_X, -100); set_val(STICK_2_Y,    0); wait(COMBO_SPEED);
+    set_val(STICK_2_X,    0); set_val(STICK_2_Y,    0); wait(COMBO_SPEED);
+    combo_busy = FALSE;
+}
+
+combo BehindBack {
+    combo_busy = TRUE;
+    set_val(STICK_2_X,   70); set_val(STICK_2_Y,   70); wait(COMBO_SPEED);
+    set_val(STICK_2_X,    0); set_val(STICK_2_Y,    0); wait(COMBO_SPEED_HALF);
+    set_val(STICK_2_X,  -70); set_val(STICK_2_Y,   70); wait(COMBO_SPEED);
+    set_val(STICK_2_X,    0); set_val(STICK_2_Y,    0); wait(COMBO_SPEED);
+    combo_busy = FALSE;
+}
+
+combo SpinMove {
+    combo_busy = TRUE;
+    set_val(STICK_2_X,  100); set_val(STICK_2_Y,    0); wait(COMBO_SPEED);
+    set_val(STICK_2_X,   70); set_val(STICK_2_Y,   70); wait(COMBO_SPEED);
+    set_val(STICK_2_X,    0); set_val(STICK_2_Y,  100); wait(COMBO_SPEED);
+    set_val(STICK_2_X,  -70); set_val(STICK_2_Y,   70); wait(COMBO_SPEED);
+    set_val(STICK_2_X, -100); set_val(STICK_2_Y,    0); wait(COMBO_SPEED);
+    set_val(STICK_2_X,    0); set_val(STICK_2_Y,    0); wait(COMBO_SPEED);
+    combo_busy = FALSE;
+}
+
+combo StepBack {
+    combo_busy = TRUE;
+    set_val(XB1_RT,       0);                            wait(COMBO_SPEED);
+    set_val(STICK_2_X,    0); set_val(STICK_2_Y,   100); wait(COMBO_SPEED);
+    set_val(XB1_X,      100);                            wait(COMBO_SPEED * 2);
+    set_val(XB1_X,        0);                            wait(COMBO_SPEED);
+    combo_busy = FALSE;
+}
+
+combo SizeUp {
+    combo_busy = TRUE;
+    set_val(XB1_RT, 100); wait(COMBO_SPEED);
+    set_val(XB1_RT,   0); wait(COMBO_SPEED_HALF);
+    set_val(XB1_RT, 100); wait(COMBO_SPEED);
+    set_val(XB1_RT,   0); wait(COMBO_SPEED);
+    combo_busy = FALSE;
+}
+
+// ═══ MOVEMENT COMBOS ════════════════════════════════════════════
+combo SpeedBurst {
+    combo_busy = TRUE;
+    set_val(XB1_RT,       0);                              wait(30);
+    set_val(STICK_1_Y, -100); set_val(STICK_1_X,    0);    wait(40);
+    set_val(STICK_1_Y,  100); set_val(STICK_1_X,    0);    wait(30);
+    set_val(XB1_RT,     100);                              wait(20);
+    combo_busy = FALSE;
+}
+
+combo QuickStop {
+    combo_busy = TRUE;
+    set_val(XB1_RT,       0);                              wait(30);
+    set_val(STICK_1_Y, -100); set_val(STICK_1_X,    0);    wait(40);
+    set_val(XB1_X,      100);                              wait(50);
+    set_val(XB1_X,        0);                              wait(COMBO_SPEED);
+    combo_busy = FALSE;
+}
+
+// ═══ POST MOVE COMBOS ══════════════════════════════════════════
+combo PostDropStep {
+    combo_busy = TRUE;
+    set_val(STICK_1_X, 100); set_val(STICK_1_Y, -100);    wait(COMBO_SPEED * 2);
+    set_val(XB1_X,     100);                               wait(COMBO_SPEED * 3);
+    set_val(XB1_X,       0);                               wait(COMBO_SPEED);
+    combo_busy = FALSE;
+}
+
+combo PostSpin {
+    combo_busy = TRUE;
+    set_val(STICK_1_X,  100); set_val(STICK_1_Y,    0);   wait(COMBO_SPEED);
+    set_val(STICK_1_X,    0); set_val(STICK_1_Y, -100);   wait(COMBO_SPEED);
+    set_val(STICK_1_X, -100); set_val(STICK_1_Y,    0);   wait(COMBO_SPEED);
+    set_val(XB1_X,       100);                             wait(COMBO_SPEED * 3);
+    set_val(XB1_X,         0);                             wait(COMBO_SPEED);
+    combo_busy = FALSE;
+}
+
+combo PostUpUnder {
+    combo_busy = TRUE;
+    set_val(XB1_X, 100); wait(COMBO_SPEED * 2);
+    set_val(XB1_X,   0); wait(COMBO_SPEED);
+    set_val(XB1_X, 100); wait(COMBO_SPEED * 3);
+    set_val(XB1_X,   0); wait(COMBO_SPEED);
+    combo_busy = FALSE;
+}
