@@ -18,8 +18,8 @@ public class CodScript : GameScript {
             _rapidFireFrame = 0;
         }
 
-        // Anti-Recoil
-        if (btn_held("XB1_RT") && mod_enabled("anti_recoil")) {
+        // Anti-Recoil — activates while ADS (LT held)
+        if (btn_held("XB1_LT") && mod_enabled("anti_recoil")) {
             int strength = cfg_get_int("anti_recoil_strength", 12);
             stick_set("RIGHT", stick_x("RIGHT"), stick_y("RIGHT") + strength * 256);
         }
