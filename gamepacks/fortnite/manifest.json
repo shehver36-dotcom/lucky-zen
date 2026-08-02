@@ -1,0 +1,57 @@
+{
+  "id": "fortnite",
+  "name": "Fortnite",
+  "version": "1.0",
+  "author": "SoftwareZen",
+  "description": "Turbo build, double edit reset, aim assist, and quick scope for Fortnite.",
+  "game_title": "Fortnite",
+  "script_file": "script.lua",
+  "mods": [
+    {
+      "id": "turbo_build",
+      "name": "Turbo Build",
+      "description": "Rapidly places build pieces while holding build mode.",
+      "enabled_by_default": true,
+      "params": [
+        {
+          "key": "turbo_interval",
+          "label": "Place Rate (ms)",
+          "default": 50,
+          "min": 20,
+          "max": 150,
+          "step": 5
+        }
+      ]
+    },
+    {
+      "id": "edit_reset",
+      "name": "Double Edit Reset",
+      "description": "Edit → Reset → Confirm in a single button press.",
+      "enabled_by_default": false,
+      "params": []
+    },
+    {
+      "id": "aim_assist",
+      "name": "Aim Assist",
+      "description": "Micro-adjustment while ADS to trigger aim assist.",
+      "enabled_by_default": false,
+      "params": [
+        {
+          "key": "fortnite_aa_strength",
+          "label": "Strength",
+          "default": 3,
+          "min": 1,
+          "max": 10,
+          "step": 1
+        }
+      ]
+    },
+    {
+      "id": "quick_scope",
+      "name": "Quick Scope",
+      "description": "Tap ADS to instantly scope and fire.",
+      "enabled_by_default": false,
+      "params": []
+    }
+  ]
+}
