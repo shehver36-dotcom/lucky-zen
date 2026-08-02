@@ -1,0 +1,176 @@
+{
+  "id": "nba2k26",
+  "name": "NBA 2K26",
+  "version": "1.0",
+  "author": "SoftwareZen",
+  "description": "Auto green, auto fadeaway, dribble god combos, speed boost, auto steal/block, post moves, quick stop, and auto rebound for NBA 2K26.",
+  "game_title": "NBA 2K26",
+  "script_file": "script.cs",
+  "mods": [
+    {
+      "id": "auto_green",
+      "name": "Auto Green / Perfect Release",
+      "description": "Automatically releases the shoot button at the exact green window based on your jumpshot timing. Detects standstill, moving, pull-up, and fadeaway shots.",
+      "enabled_by_default": true,
+      "params": [
+        {
+          "key": "green_stand_ms",
+          "label": "Standstill Shot (ms)",
+          "default": 500,
+          "min": 350,
+          "max": 750,
+          "step": 5
+        },
+        {
+          "key": "green_moving_ms",
+          "label": "Moving Shot (ms)",
+          "default": 505,
+          "min": 350,
+          "max": 750,
+          "step": 5
+        },
+        {
+          "key": "green_pullup_ms",
+          "label": "Pull-Up Sprint (ms)",
+          "default": 520,
+          "min": 350,
+          "max": 750,
+          "step": 5
+        },
+        {
+          "key": "green_fade_ms",
+          "label": "Fadeaway (ms)",
+          "default": 580,
+          "min": 400,
+          "max": 800,
+          "step": 5
+        },
+        {
+          "key": "green_contested_offset",
+          "label": "Contested Offset (ms)",
+          "default": 35,
+          "min": 0,
+          "max": 80,
+          "step": 5
+        }
+      ]
+    },
+    {
+      "id": "adaptive_timing",
+      "name": "Adaptive Shot Timing",
+      "description": "Automatically adjusts the shot release window based on your movement state — standstill, pull-up, fadeaway, or contested. Required for Auto Green to auto-detect.",
+      "enabled_by_default": true,
+      "params": []
+    },
+    {
+      "id": "auto_fade",
+      "name": "Auto Fadeaway",
+      "description": "Dedicated fadeaway timing override. Left stick pulled back + shoot triggers extended hold for fade animations.",
+      "enabled_by_default": false,
+      "params": [
+        {
+          "key": "fade_timing_ms",
+          "label": "Fadeaway Hold (ms)",
+          "default": 580,
+          "min": 400,
+          "max": 850,
+          "step": 5
+        }
+      ]
+    },
+    {
+      "id": "dribble_god",
+      "name": "Dribble God",
+      "description": "One-button dribble move combos — momentum crossover, behind the back, spin move, step-back, and size-up hesitation.",
+      "enabled_by_default": true,
+      "params": [
+        {
+          "key": "combo_speed",
+          "label": "Combo Speed (lower=faster)",
+          "default": 8,
+          "min": 3,
+          "max": 20,
+          "step": 1
+        }
+      ]
+    },
+    {
+      "id": "speed_boost",
+      "name": "Speed Boost / Burst",
+      "description": "Animation-cancel speed burst on LS click while sprinting forward.",
+      "enabled_by_default": true,
+      "params": []
+    },
+    {
+      "id": "auto_steal",
+      "name": "Auto Steal",
+      "description": "Rapid steal button spam while holding LT (intense defense).",
+      "enabled_by_default": true,
+      "params": [
+        {
+          "key": "steal_interval_ms",
+          "label": "Steal Rate (ms)",
+          "default": 120,
+          "min": 60,
+          "max": 300,
+          "step": 10
+        }
+      ]
+    },
+    {
+      "id": "auto_block",
+      "name": "Auto Block",
+      "description": "Perfectly timed block attempts while in defensive stance (LT held).",
+      "enabled_by_default": false,
+      "params": [
+        {
+          "key": "block_interval_ms",
+          "label": "Block Rate (ms)",
+          "default": 80,
+          "min": 40,
+          "max": 200,
+          "step": 10
+        }
+      ]
+    },
+    {
+      "id": "post_moves",
+      "name": "Post Move Combos",
+      "description": "One-button drop step, post spin, and up-and-under while in the post (LT held).",
+      "enabled_by_default": true,
+      "params": [
+        {
+          "key": "post_move_speed",
+          "label": "Post Move Speed (lower=faster)",
+          "default": 6,
+          "min": 3,
+          "max": 15,
+          "step": 1
+        }
+      ]
+    },
+    {
+      "id": "quick_stop",
+      "name": "Quick Stop Pull-Up",
+      "description": "Instant transition from sprint to pull-up jumper when shooting while sprinting.",
+      "enabled_by_default": false,
+      "params": []
+    },
+    {
+      "id": "auto_rebound",
+      "name": "Auto Rebound",
+      "description": "Timed jump for rebounds when near the paint in defensive stance.",
+      "enabled_by_default": true,
+      "params": [
+        {
+          "key": "rebound_interval_ms",
+          "label": "Jump Rate (ms)",
+          "default": 300,
+          "min": 150,
+          "max": 500,
+          "step": 25
+        }
+      ]
+    }
+  ]
+}
