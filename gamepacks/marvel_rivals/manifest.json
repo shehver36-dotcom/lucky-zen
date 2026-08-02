@@ -1,0 +1,15 @@
+{
+  "id": "marvel_rivals",
+  "name": "Marvel Rivals",
+  "version": "1.0",
+  "author": "Lucky Services",
+  "description": "Aim assist, ability combos, auto-melee, and melee cancel.",
+  "game_title": "Marvel Rivals",
+  "script_file": "script.cs",
+  "mods": [
+    {"id": "aim_assist", "name": "Aim Assist", "description": "Micro-adjust right stick while ADS.", "enabled_by_default": true, "params": [{"key": "mr_aa_strength", "label": "Strength", "default": 4, "min": 1, "max": 15, "step": 1}]},
+    {"id": "ability_combo", "name": "Ability Combos", "description": "One-button burst damage and ult setup rotations.", "enabled_by_default": true, "params": [{"key": "mr_combo_speed", "label": "Combo Speed", "default": 6, "min": 2, "max": 15, "step": 1}]},
+    {"id": "auto_melee", "name": "Auto Melee", "description": "Auto-melee when close range and firing.", "enabled_by_default": true, "params": [{"key": "mr_melee_ms", "label": "Melee Rate (ms)", "default": 300, "min": 100, "max": 500, "step": 25}]},
+    {"id": "melee_cancel", "name": "Melee Cancel", "description": "Animation cancel on melee.", "enabled_by_default": false, "params": []}
+  ]
+}
