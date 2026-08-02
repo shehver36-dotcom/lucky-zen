@@ -1,0 +1,15 @@
+{
+  "id": "rust",
+  "name": "Rust",
+  "version": "1.0",
+  "author": "Lucky Services",
+  "description": "Recoil control, auto-fire for semi rifles, crouch spam, and auto-heal.",
+  "game_title": "Rust",
+  "script_file": "script.cs",
+  "mods": [
+    {"id": "rapid_fire", "name": "Rapid Fire", "description": "Auto-fire for semi-auto weapons (M39, SAR, Python).", "enabled_by_default": true, "params": [{"key": "rust_rapid_ms", "label": "Fire Rate (ms)", "default": 100, "min": 50, "max": 250, "step": 10}]},
+    {"id": "anti_recoil", "name": "Anti-Recoil", "description": "AK/M249/LR-300 recoil compensation.", "enabled_by_default": true, "params": [{"key": "rust_recoil_v", "label": "Vertical", "default": 18, "min": 1, "max": 40, "step": 1}, {"key": "rust_recoil_h", "label": "Horizontal", "default": 0, "min": -10, "max": 10, "step": 1}]},
+    {"id": "crouch_spam", "name": "Crouch Spam", "description": "Auto-crouch while shooting.", "enabled_by_default": false, "params": []},
+    {"id": "auto_heal", "name": "Auto Heal", "description": "Hold Y to auto-heal.", "enabled_by_default": false, "params": []}
+  ]
+}
