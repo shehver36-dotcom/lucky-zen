@@ -1,0 +1,73 @@
+{
+  "id": "modern_warfare",
+  "name": "Call of Duty: Modern Warfare / Warzone",
+  "version": "1.0",
+  "author": "SoftwareZen",
+  "description": "Rapid fire, anti-recoil, aim assist, drop shot, and auto-sprint for Call of Duty.",
+  "game_title": "Call of Duty: Modern Warfare",
+  "script_file": "script.lua",
+  "mods": [
+    {
+      "id": "rapid_fire",
+      "name": "Rapid Fire",
+      "description": "Converts semi-auto weapons to full-auto while holding fire.",
+      "enabled_by_default": true,
+      "params": [
+        {
+          "key": "rapid_fire_interval",
+          "label": "Fire Rate (ms)",
+          "default": 40,
+          "min": 20,
+          "max": 200,
+          "step": 5
+        }
+      ]
+    },
+    {
+      "id": "anti_recoil",
+      "name": "Anti-Recoil",
+      "description": "Automatically pulls right stick down while firing to compensate for weapon recoil.",
+      "enabled_by_default": true,
+      "params": [
+        {
+          "key": "anti_recoil_strength",
+          "label": "Strength",
+          "default": 12,
+          "min": 1,
+          "max": 50,
+          "step": 1
+        }
+      ]
+    },
+    {
+      "id": "aim_assist",
+      "name": "Aim Assist",
+      "description": "Micro-wobble right stick while ADS to activate rotational aim assist.",
+      "enabled_by_default": false,
+      "params": [
+        {
+          "key": "aim_assist_strength",
+          "label": "Strength",
+          "default": 5,
+          "min": 1,
+          "max": 20,
+          "step": 1
+        }
+      ]
+    },
+    {
+      "id": "drop_shot",
+      "name": "Drop Shot",
+      "description": "Instantly goes prone when firing + crouch button pressed.",
+      "enabled_by_default": false,
+      "params": []
+    },
+    {
+      "id": "auto_sprint",
+      "name": "Auto-Sprint",
+      "description": "Automatically holds sprint when moving forward.",
+      "enabled_by_default": true,
+      "params": []
+    }
+  ]
+}
