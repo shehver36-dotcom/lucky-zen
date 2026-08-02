@@ -1,0 +1,66 @@
+{
+  "id": "apex",
+  "name": "Apex Legends",
+  "version": "1.0",
+  "author": "SoftwareZen",
+  "description": "Rapid fire, anti-recoil, superglide, and crouch spam for Apex Legends.",
+  "game_title": "Apex Legends",
+  "script_file": "script.lua",
+  "mods": [
+    {
+      "id": "rapid_fire",
+      "name": "Rapid Fire",
+      "description": "Converts single-fire weapons (Hemlok, Prowler, G7) to full-auto.",
+      "enabled_by_default": true,
+      "params": [
+        {
+          "key": "apex_rapidfire_ms",
+          "label": "Fire Rate (ms)",
+          "default": 55,
+          "min": 30,
+          "max": 250,
+          "step": 5
+        }
+      ]
+    },
+    {
+      "id": "anti_recoil",
+      "name": "Anti-Recoil",
+      "description": "Automatic recoil compensation while firing.",
+      "enabled_by_default": true,
+      "params": [
+        {
+          "key": "apex_recoil_strength",
+          "label": "Strength",
+          "default": 10,
+          "min": 1,
+          "max": 40,
+          "step": 1
+        }
+      ]
+    },
+    {
+      "id": "superglide",
+      "name": "Auto Superglide",
+      "description": "Frame-perfect crouch + jump on mantle for maximum slide velocity.",
+      "enabled_by_default": true,
+      "params": [
+        {
+          "key": "superglide_timing",
+          "label": "Timing (ms)",
+          "default": 28,
+          "min": 10,
+          "max": 60,
+          "step": 1
+        }
+      ]
+    },
+    {
+      "id": "crouch_spam",
+      "name": "Crouch Spam",
+      "description": "Rapid crouch while reloading to make yourself harder to hit.",
+      "enabled_by_default": false,
+      "params": []
+    }
+  ]
+}
