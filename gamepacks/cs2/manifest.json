@@ -1,0 +1,16 @@
+{
+  "id": "cs2",
+  "name": "CS2",
+  "version": "1.0",
+  "author": "Lucky Services",
+  "description": "Recoil patterns, rapid fire, bunny hop, counter-strafe, and quick switch.",
+  "game_title": "Counter-Strike 2",
+  "script_file": "script.cs",
+  "mods": [
+    {"id": "rapid_fire", "name": "Rapid Fire", "description": "Auto-fire for pistols (USP, Glock, Deagle).", "enabled_by_default": true, "params": [{"key": "cs2_rapid_ms", "label": "Fire Rate (ms)", "default": 60, "min": 30, "max": 150, "step": 10}]},
+    {"id": "anti_recoil", "name": "Anti-Recoil", "description": "AK-47/M4 recoil pattern compensation.", "enabled_by_default": true, "params": [{"key": "cs2_recoil_v", "label": "Vertical", "default": 15, "min": 1, "max": 35, "step": 1}, {"key": "cs2_recoil_h", "label": "Horizontal", "default": 3, "min": -10, "max": 10, "step": 1}]},
+    {"id": "bunny_hop", "name": "Bunny Hop", "description": "Hold A to auto-bhop with strafe assist.", "enabled_by_default": true, "params": [{"key": "cs2_bhop_timing", "label": "Hop Timing (ms)", "default": 20, "min": 10, "max": 40, "step": 2}]},
+    {"id": "counter_strafe", "name": "Counter-Strafe", "description": "Auto-tap opposite direction when stopping.", "enabled_by_default": false, "params": []},
+    {"id": "quick_switch", "name": "Quick Switch", "description": "YY animation cancel for AWP/scout.", "enabled_by_default": false, "params": []}
+  ]
+}
